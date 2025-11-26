@@ -186,7 +186,7 @@ public class ExhibitionArtworkController {
                     .collect(Collectors.toList());
 
             for (Artwork a : obras) {
-                System.out.println("ID: " + a.getId() + " | Título: " + a.getTitle() + " | Categoria: " + a.getCategory());
+                System.out.println("ID: " + a.getId() + " | Título: " + a.getTitle() + " | Categoria: " + a.getIdCategory());
             }
 
         } catch (Exception e) {

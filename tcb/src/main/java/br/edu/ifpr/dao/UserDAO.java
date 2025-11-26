@@ -47,7 +47,7 @@ public class UserDAO {
                 u.setEmail(rs.getString("email"));
                 u.setPassword(rs.getString("password"));
                 u.setLocation(rs.getString("location"));
-                u.setProfilePhoto(rs.getString("profilePhoto"));
+                u.setProfilePhoto(rs.getString("profile_photo"));
                 u.setBiography(rs.getString("biography"));
 
                 users.add(u);
@@ -62,7 +62,7 @@ public class UserDAO {
 
     public void update(User user) {
         String sql = "UPDATE users " +
-                "SET username=?, email=?, password=?, location=?, profilePhoto=?, biography=? " +
+                "SET username=?, email=?, password=?, location=?, profile_photo=?, biography=? " +
                 "WHERE id=?";
 
         try (Connection conn = ConnectionFactory.connect();

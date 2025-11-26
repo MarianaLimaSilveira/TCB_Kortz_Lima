@@ -9,8 +9,8 @@ import br.edu.ifpr.model.Artwork;
 public class ArtworkDAO {
 
     public void create(Artwork artwork) {
-        String sql = "INSERT INTO TCB_lima_kortz.Artwork " +
-                "(title, description, category, id_artist) " +
+        String sql = "INSERT artworks " +
+                "(title, description, id_category, id_user) " +
                 "VALUES (?, ?, ?, ?)";
 
         try (Connection conn = ConnectionFactory.connect();
@@ -18,8 +18,8 @@ public class ArtworkDAO {
 
             stmt.setString(1, artwork.getTitle());
             stmt.setString(2, artwork.getDescription());
-            stmt.setString(3, artwork.getCategory());
-            stmt.setInt(4, artwork.getIdArtist());
+            stmt.setString(3, artwork.getIdCategory());
+            stmt.setInt(4, artwork.getIdUser());
 
             stmt.executeUpdate();
             System.out.println("Artwork criada com sucesso!");
@@ -31,7 +31,7 @@ public class ArtworkDAO {
 
     public List<Artwork> readAll() {
         List<Artwork> artworks = new ArrayList<>();
-        String sql = "SELECT * FROM TCB_lima_kortz.Artwork";
+        String sql = "SELECT * FROM artworks";
 
         try (Connection conn = ConnectionFactory.connect();
                 Statement stmt = conn.createStatement();
@@ -43,8 +43,8 @@ public class ArtworkDAO {
                 a.setId(rs.getInt("id"));
                 a.setTitle(rs.getString("title"));
                 a.setDescription(rs.getString("description"));
-                a.setCategory(rs.getString("category"));
-                a.setIdArtist(rs.getInt("id_artist"));
+                a.setIdCategory(rs.getString("id_category"));
+                a.setIdUser(rs.getInt("id_user"));
 
                 artworks.add(a);
             }
@@ -57,8 +57,8 @@ public class ArtworkDAO {
     }
 
     public void update(Artwork artwork) {
-        String sql = "UPDATE TCB_lima_kortz.Artwork " +
-                "SET title=?, description=?, category=?, id_artist=? " +
+        String sql = "UPDATE artworks " +
+                "SET title=?, description=?, id_category=?, id_user=? " +
                 "WHERE id=?";
 
         try (Connection conn = ConnectionFactory.connect();
@@ -66,8 +66,8 @@ public class ArtworkDAO {
 
             stmt.setString(1, artwork.getTitle());
             stmt.setString(2, artwork.getDescription());
-            stmt.setString(3, artwork.getCategory());
-            stmt.setInt(4, artwork.getIdArtist());
+            stmt.setString(3, artwork.getIdCategory());
+            stmt.setInt(4, artwork.getIdUser());
             stmt.setInt(5, artwork.getId());
 
             stmt.executeUpdate();
@@ -79,7 +79,7 @@ public class ArtworkDAO {
     }
 
     public void delete(int id) {
-        String sql = "DELETE FROM TCB_lima_kortz.Artwork WHERE id=?";
+        String sql = "DELETE FROM artworks WHERE id=?";
 
         try (Connection conn = ConnectionFactory.connect();
                 PreparedStatement stmt = conn.prepareStatement(sql)) {

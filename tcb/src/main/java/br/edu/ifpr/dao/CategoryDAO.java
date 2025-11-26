@@ -9,7 +9,7 @@ import br.edu.ifpr.model.Category;
 public class CategoryDAO {
 
     public void create(Category category) {
-        String sql = "INSERT INTO TCB_lima_kortz.Category (name, description) VALUES (?, ?)";
+        String sql = "INSERT INTO categories (name, description) VALUES (?, ?)";
 
         try (Connection conn = ConnectionFactory.connect();
                 PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -27,7 +27,7 @@ public class CategoryDAO {
 
     public List<Category> readAll() {
         List<Category> categories = new ArrayList<>();
-        String sql = "SELECT * FROM TCB_lima_kortz.Category";
+        String sql = "SELECT * FROM categories";
 
         try (Connection conn = ConnectionFactory.connect();
                 Statement stmt = conn.createStatement();
@@ -51,7 +51,7 @@ public class CategoryDAO {
     }
 
     public void update(Category category) {
-        String sql = "UPDATE TCB_lima_kortz.Category SET name=?, description=? WHERE id=?";
+        String sql = "UPDATE categories SET name=?, description=? WHERE id=?";
 
         try (Connection conn = ConnectionFactory.connect();
                 PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -69,7 +69,7 @@ public class CategoryDAO {
     }
 
     public void delete(Long id) {
-        String sql = "DELETE FROM TCB_lima_kortz.Category WHERE id=?";
+        String sql = "DELETE FROM categories WHERE id=?";
 
         try (Connection conn = ConnectionFactory.connect();
                 PreparedStatement stmt = conn.prepareStatement(sql)) {

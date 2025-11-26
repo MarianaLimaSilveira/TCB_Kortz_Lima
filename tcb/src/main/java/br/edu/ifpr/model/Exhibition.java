@@ -6,6 +6,7 @@ public class Exhibition {
     private int idCreator;
     private String name;
     private String theme;
+    private String description;
     private String startDate;
     private String endDate;
 
@@ -13,11 +14,12 @@ public class Exhibition {
     }
 
     public Exhibition(int id, int idCreator, String name,
-            String theme, String startDate, String endDate) {
+            String theme, String description, String startDate, String endDate) {
         this.id = id;
         this.idCreator = idCreator;
         this.name = name;
         this.theme = theme;
+        this.description = description;
         this.startDate = startDate;
         this.endDate = endDate;
     }
@@ -52,6 +54,14 @@ public class Exhibition {
 
     public void setTheme(String theme) {
         this.theme = theme;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public String getStartDate() {

@@ -5,19 +5,19 @@ public class Artwork {
     private int id;
     private String title;
     private String description;
-    private String category;
-    private int idArtist;
+    private String idCategory;
+    private int idUser;
 
     public Artwork() {
     }
 
     public Artwork(int id, String title, String description,
-            String category, int idArtist) {
+            String idCategory, int idUser) {
         this.id = id;
         this.title = title;
         this.description = description;
-        this.category = category;
-        this.idArtist = idArtist;
+        this.idCategory = idCategory;
+        this.idUser = idUser;
     }
 
     public int getId() {
@@ -44,19 +44,19 @@ public class Artwork {
         this.description = description;
     }
 
-    public String getCategory() {
-        return category;
+    public String getIdCategory() {
+        return idCategory;
     }
 
-    public void setCategory(String category) {
-        this.category = category;
+    public void setIdCategory(String idCategory) {
+        this.idCategory = idCategory;
     }
 
-    public int getIdArtist() {
-        return idArtist;
+    public int getIdUser() {
+        return idUser;
     }
 
-    public void setIdArtist(int idArtist) {
-        this.idArtist = idArtist;
+    public void setIdUser(int idUser) {
+        this.idUser = idUser;
     }
 }

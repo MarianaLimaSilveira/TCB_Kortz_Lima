@@ -9,8 +9,8 @@ import br.edu.ifpr.model.Exhibition;
 public class ExhibitionDAO {
 
     public void create(Exhibition exhibition) {
-        String sql = "INSERT INTO TCB_lima_kortz.Exhibition " +
-                "(id_creator, name, theme, start_date, end_date) " +
+        String sql = "INSERT INTO exhibitions " +
+                "(id_creator, name, theme, description, start_date, end_date) " +
                 "VALUES (?, ?, ?, ?, ?)";
 
         try (Connection conn = ConnectionFactory.connect();
@@ -19,6 +19,7 @@ public class ExhibitionDAO {
             stmt.setInt(1, exhibition.getIdCreator());
             stmt.setString(2, exhibition.getName());
             stmt.setString(3, exhibition.getTheme());
+            stmt.setString(3, exhibition.getDescription());
             stmt.setString(4, exhibition.getStartDate());
             stmt.setString(5, exhibition.getEndDate());
 
@@ -32,7 +33,7 @@ public class ExhibitionDAO {
 
     public List<Exhibition> readAll() {
         List<Exhibition> exhibitions = new ArrayList<>();
-        String sql = "SELECT * FROM TCB_lima_kortz.Exhibition";
+        String sql = "SELECT * FROM exhibitions";
 
         try (Connection conn = ConnectionFactory.connect();
                 Statement stmt = conn.createStatement();
@@ -45,6 +46,7 @@ public class ExhibitionDAO {
                 ex.setIdCreator(rs.getInt("id_creator"));
                 ex.setName(rs.getString("name"));
                 ex.setTheme(rs.getString("theme"));
+                ex.setDescription(rs.getString("description"));
                 ex.setStartDate(rs.getString("start_date"));
                 ex.setEndDate(rs.getString("end_date"));
 
@@ -58,8 +60,8 @@ public class ExhibitionDAO {
     }
 
     public void update(Exhibition exhibition) {
-        String sql = "UPDATE TCB_lima_kortz.Exhibition " +
-                "SET id_creator=?, name=?, theme=?, start_date=?, end_date=? " +
+        String sql = "UPDATE exhibitions " +
+                "SET id_creator=?, name=?, theme=?, description=?, start_date=?, end_date=? " +
                 "WHERE id=?";
 
         try (Connection conn = ConnectionFactory.connect();
@@ -68,6 +70,7 @@ public class ExhibitionDAO {
             stmt.setInt(1, exhibition.getIdCreator());
             stmt.setString(2, exhibition.getName());
             stmt.setString(3, exhibition.getTheme());
+            stmt.setString(3, exhibition.getDescription());
             stmt.setString(4, exhibition.getStartDate());
             stmt.setString(5, exhibition.getEndDate());
             stmt.setInt(6, exhibition.getId());
@@ -81,7 +84,7 @@ public class ExhibitionDAO {
     }
 
     public void delete(int id) {
-        String sql = "DELETE FROM TCB_lima_kortz.Exhibition WHERE id=?";
+        String sql = "DELETE FROM exhibitions WHERE id=?";
 
         try (Connection conn = ConnectionFactory.connect();
                 PreparedStatement stmt = conn.prepareStatement(sql)) {

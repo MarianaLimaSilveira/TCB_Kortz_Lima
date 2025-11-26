@@ -9,7 +9,7 @@ import br.edu.ifpr.model.Rating;
 public class RatingDAO {
 
     public void create(Rating rating) {
-        String sql = "INSERT INTO TCB_lima_kortz.Rating " +
+        String sql = "INSERT INTO reviews " +
                 "(artwork_id, exhibition_id, user_id, note, text) " +
                 "VALUES (?, ?, ?, ?, ?)";
 
@@ -42,7 +42,7 @@ public class RatingDAO {
 
     public List<Rating> readAll() {
         List<Rating> ratings = new ArrayList<>();
-        String sql = "SELECT * FROM TCB_lima_kortz.Rating";
+        String sql = "SELECT * FROM reviews";
 
         try (Connection conn = ConnectionFactory.connect();
                 Statement stmt = conn.createStatement();
@@ -74,7 +74,7 @@ public class RatingDAO {
     }
 
     public void update(Rating rating) {
-        String sql = "UPDATE TCB_lima_kortz.Rating " +
+        String sql = "UPDATE reviews " +
                 "SET artwork_id=?, exhibition_id=?, user_id=?, note=?, text=? " +
                 "WHERE id=?";
 
@@ -107,7 +107,7 @@ public class RatingDAO {
     }
 
     public void delete(Long id) {
-        String sql = "DELETE FROM TCB_lima_kortz.Rating WHERE id=?";
+        String sql = "DELETE FROM reviews WHERE id=?";
 
         try (Connection conn = ConnectionFactory.connect();
                 PreparedStatement stmt = conn.prepareStatement(sql)) {

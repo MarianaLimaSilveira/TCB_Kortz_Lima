@@ -26,7 +26,7 @@ public class CategoryController {
     public void deleteCategory(Long categoryId) {
 
         boolean categoriaEmUso = artworkDAO.readAll().stream()
-                .anyMatch(a -> a.getCategory().equalsIgnoreCase(
+                .anyMatch(a -> a.getIdCategory().equalsIgnoreCase(
                         listCategories().stream().filter(c -> c.getId().equals(categoryId)).findFirst().get().getName()
                 ));
 

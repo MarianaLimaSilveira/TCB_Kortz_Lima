@@ -179,10 +179,10 @@ public class Main {
         a.setDescription(input.nextLine());
 
         System.out.print("Categoria (texto): ");
-        a.setCategory(input.nextLine());
+        a.setIdCategory(input.nextLine());
 
         System.out.print("ID do artista/criador: ");
-        a.setIdArtist(Integer.parseInt(input.nextLine()));
+        a.setIdUser(Integer.parseInt(input.nextLine()));
 
         artworkController.createArtwork(a);
     }
@@ -204,10 +204,10 @@ public class Main {
         a.setDescription(input.nextLine());
 
         System.out.print("Nova categoria: ");
-        a.setCategory(input.nextLine());
+        a.setIdCategory(input.nextLine());
 
         System.out.print("Novo ID de artista: ");
-        a.setIdArtist(Integer.parseInt(input.nextLine()));
+        a.setIdUser(Integer.parseInt(input.nextLine()));
 
         artworkController.updateArtwork(a);
     }
