@@ -2,8 +2,8 @@ package br.edu.ifpr.model;
 
 public class Exhibition {
 
-    private int id;
-    private int idCreator;
+    private long id;
+    private long idCreator;
     private String name;
     private String theme;
     private String description;
@@ -13,7 +13,7 @@ public class Exhibition {
     public Exhibition() {
     }
 
-    public Exhibition(int id, int idCreator, String name,
+    public Exhibition(long id, long idCreator, String name,
             String theme, String description, String startDate, String endDate) {
         this.id = id;
         this.idCreator = idCreator;
@@ -24,19 +24,19 @@ public class Exhibition {
         this.endDate = endDate;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
-    public int getIdCreator() {
+    public long getIdCreator() {
         return idCreator;
     }
 
-    public void setIdCreator(int idCreator) {
+    public void setIdCreator(long idCreator) {
         this.idCreator = idCreator;
     }
 

@@ -2,7 +2,7 @@ package br.edu.ifpr.model;
 
 public class User {
 
-    private int id;
+    private long id;
     private String username;
     private String email;
     private String password;
@@ -24,11 +24,11 @@ public class User {
         this.biography = biography;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 

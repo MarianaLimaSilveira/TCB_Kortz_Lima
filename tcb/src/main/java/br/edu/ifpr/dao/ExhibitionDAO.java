@@ -1,6 +1,10 @@
 package br.edu.ifpr.dao;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,7 +20,7 @@ public class ExhibitionDAO {
         try (Connection conn = ConnectionFactory.connect();
                 PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            stmt.setInt(1, exhibition.getIdCreator());
+            stmt.setLong(1, exhibition.getIdCreator());
             stmt.setString(2, exhibition.getName());
             stmt.setString(3, exhibition.getTheme());
             stmt.setString(3, exhibition.getDescription());
@@ -67,13 +71,13 @@ public class ExhibitionDAO {
         try (Connection conn = ConnectionFactory.connect();
                 PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            stmt.setInt(1, exhibition.getIdCreator());
+            stmt.setLong(1, exhibition.getIdCreator());
             stmt.setString(2, exhibition.getName());
             stmt.setString(3, exhibition.getTheme());
             stmt.setString(3, exhibition.getDescription());
             stmt.setString(4, exhibition.getStartDate());
             stmt.setString(5, exhibition.getEndDate());
-            stmt.setInt(6, exhibition.getId());
+            stmt.setLong(6, exhibition.getId());
 
             stmt.executeUpdate();
             System.out.println("Exibição atualizada!");
