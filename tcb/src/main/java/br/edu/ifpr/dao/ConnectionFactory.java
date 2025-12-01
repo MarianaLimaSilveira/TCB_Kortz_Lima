@@ -11,20 +11,20 @@ public class ConnectionFactory {
 
     public static Connection connect(){
         try {
-            if(conn==null){
-                //jdbc:gdbd://ip do servidor do BD:porta/database
+            // AQUI ESTA A CORREÇÃO:
+            // Verificamos se é nula OU se a conexão foi fechada anteriormente
+            if(conn == null || conn.isClosed()){ 
+                
                 String url = "jdbc:mysql://localhost:3306/TCB_lima_kortz";
-                String user= "aluno";
-                String password="aluno";
+                String user= "root";
+                String password="belinha"; // Certifique-se que a senha é essa mesmo
+                
                 conn = DriverManager.getConnection(url, user, password);
-                System.out.println("conectado ao banco com sucesso!");
+                System.out.println("Conectado ao banco com sucesso!");
             }
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         return conn;
-
     }
-
 }
