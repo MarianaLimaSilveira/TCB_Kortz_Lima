@@ -39,7 +39,7 @@ public class ArtworkController {
                 .anyMatch(ea -> ea.getArtworkId() == artworkId);
 
         if (temRating || temExposicao) {
-            System.out.println("❌ Não é permitido excluir uma obra vinculada a exposição ou avaliações.");
+            System.out.println("Não é permitido excluir uma obra vinculada a exposição ou avaliações.");
             return;
         }
         artworkDAO.delete(artworkId);
