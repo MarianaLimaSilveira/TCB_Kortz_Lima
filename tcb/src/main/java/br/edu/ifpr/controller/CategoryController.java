@@ -31,7 +31,7 @@ public class CategoryController {
                 ));
 
         if (categoriaEmUso) {
-            System.out.println("❌ Categoria está em uso por obras e não pode ser excluída. Apenas desativação permitida.");
+            System.out.println("Categoria está em uso por obras e não pode ser excluída. Apenas desativação permitida.");
             return;
         }
         categoryDAO.delete(categoryId);

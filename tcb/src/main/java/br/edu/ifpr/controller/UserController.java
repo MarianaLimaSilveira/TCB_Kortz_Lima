@@ -41,4 +41,25 @@ public class UserController {
         if (ratings == null) return false;
         return ratings.stream().anyMatch(r -> r.getUserId() == userId);
     }
+
+    public boolean login(String email, String senha) {
+
+        // busca usuário no banco
+        User u = userDAO.findByEmail(email);
+
+        // email não encontrado
+        if (u == null) {
+            return false;
+        }
+
+        // senha incorreta
+        if (!u.getPassword().equals(senha)) {
+            return false;
+        }
+
+        // se chegou aqui: login bem-sucedido
+        Sessao.usuarioLogado = u;  // guarda o usuário para o resto do sistema
+
+        return true;
+    }
 }
