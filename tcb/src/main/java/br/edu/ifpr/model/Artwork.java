@@ -2,17 +2,17 @@ package br.edu.ifpr.model;
 
 public class Artwork {
 
-    private int id;
+    private long id;
     private String title;
     private String description;
-    private String idCategory;
-    private int idUser;
+    private long idCategory;
+    private long idUser;
 
     public Artwork() {
     }
 
-    public Artwork(int id, String title, String description,
-            String idCategory, int idUser) {
+    public Artwork(long id, String title, String description,
+            long idCategory, long idUser) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -20,11 +20,11 @@ public class Artwork {
         this.idUser = idUser;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -44,19 +44,19 @@ public class Artwork {
         this.description = description;
     }
 
-    public String getIdCategory() {
+    public long getIdCategory() {
         return idCategory;
     }
 
-    public void setIdCategory(String idCategory) {
+    public void setIdCategory(long idCategory) {
         this.idCategory = idCategory;
     }
 
-    public int getIdUser() {
+    public long getIdUser() {
         return idUser;
     }
 
-    public void setIdUser(int idUser) {
+    public void setIdUser(long idUser) {
         this.idUser = idUser;
     }
 }

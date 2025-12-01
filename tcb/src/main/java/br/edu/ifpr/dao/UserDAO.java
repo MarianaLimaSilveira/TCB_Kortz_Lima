@@ -15,39 +15,33 @@ public class UserDAO {
     public UserDAO() {}
 
     
-    public void create(User u) {
-        String sql = "INSERT INTO users (username, email, password, location, profile_photo, biography) " +
-                     "VALUES (?, ?, ?, ?, ?, ?)";
+   public void create(User u) {
+    String sql = "INSERT INTO users (username, email, password, location, profile_photo, biography) VALUES (?, ?, ?, ?, ?, ?)";
 
-        try {
-            Connection conn = ConnectionFactory.connect();
-            PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+    // CORREÇÃO: Tudo dentro do try(...) para fechar automático
+    try (Connection conn = ConnectionFactory.connect();
+         PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
-            stmt.setString(1, u.getUsername());
-            stmt.setString(2, u.getEmail());
-            stmt.setString(3, u.getPassword());
-            stmt.setString(4, u.getLocation());
-            stmt.setString(5, u.getProfilePhoto());
-            stmt.setString(6, u.getBiography());
+        stmt.setString(1, u.getUsername());
+        stmt.setString(2, u.getEmail());
+        stmt.setString(3, u.getPassword());
+        stmt.setString(4, u.getLocation());
+        stmt.setString(5, u.getProfilePhoto());
+        stmt.setString(6, u.getBiography());
 
-            stmt.executeUpdate();
+        stmt.executeUpdate();
 
-            // pegar id gerado (opcional)
-            ResultSet keys = stmt.getGeneratedKeys();
-            if (keys.next()) {
-                int generatedId = keys.getInt(1);
-                u.setId(generatedId);
-            }
-
-            keys.close();
-            stmt.close();
-
-            System.out.println("Usuário criado com sucesso!");
-        } catch (SQLException e) {
-            System.out.println("Erro ao criar usuário: " + e.getMessage());
-            e.printStackTrace();
+        ResultSet keys = stmt.getGeneratedKeys();
+        if (keys.next()) {
+            u.setId(keys.getInt(1));
         }
+        keys.close(); // Boa prática fechar o ResultSet também
+        System.out.println("Usuário criado com sucesso!");
+
+    } catch (SQLException e) {
+        System.out.println("Erro ao criar usuário: " + e.getMessage());
     }
+}
 
     
     public List<User> readAll() {

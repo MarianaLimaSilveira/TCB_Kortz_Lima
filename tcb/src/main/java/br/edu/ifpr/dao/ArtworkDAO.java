@@ -13,21 +13,19 @@ import br.edu.ifpr.model.Artwork;
 public class ArtworkDAO {
 
     public void create(Artwork artwork) {
-        String sql = "INSERT artworks " +
-                "(title, description, id_category, id_user) " +
-                "VALUES (?, ?, ?, ?)";
+        // CORREÇÃO: Nomes das colunas iguais ao banco (id_category, id_user)
+        String sql = "INSERT INTO artworks (title, description, id_category, id_user) VALUES (?, ?, ?, ?)";
 
         try (Connection conn = ConnectionFactory.connect();
-                PreparedStatement stmt = conn.prepareStatement(sql)) {
+            PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, artwork.getTitle());
             stmt.setString(2, artwork.getDescription());
-            stmt.setString(3, artwork.getIdCategory());
-            stmt.setInt(4, artwork.getIdUser());
+            stmt.setLong(3, artwork.getIdCategory()); // CORREÇÃO: setLong
+            stmt.setLong(4, artwork.getIdUser());
 
             stmt.executeUpdate();
             System.out.println("Artwork criada com sucesso!");
-
         } catch (SQLException e) {
             System.out.println("Erro ao criar artwork: " + e.getMessage());
         }
@@ -41,17 +39,15 @@ public class ArtworkDAO {
                 Statement stmt = conn.createStatement();
                 ResultSet rs = stmt.executeQuery(sql)) {
 
-            while (rs.next()) {
-                Artwork a = new Artwork();
-
-                a.setId(rs.getInt("id"));
-                a.setTitle(rs.getString("title"));
-                a.setDescription(rs.getString("description"));
-                a.setIdCategory(rs.getString("id_category"));
-                a.setIdUser(rs.getInt("id_user"));
-
-                artworks.add(a);
-            }
+        while (rs.next()) {
+            Artwork a = new Artwork();
+            a.setId(rs.getInt("id"));
+            a.setTitle(rs.getString("title"));
+            a.setDescription(rs.getString("description"));
+            a.setIdCategory(rs.getLong("id_category")); // CORREÇÃO: getLong
+            a.setIdUser(rs.getLong("id_user"));          // CORREÇÃO: Nome da coluna id_user
+            artworks.add(a);
+        }
 
         } catch (SQLException e) {
             System.out.println("Erro ao buscar artworks: " + e.getMessage());
@@ -70,9 +66,9 @@ public class ArtworkDAO {
 
             stmt.setString(1, artwork.getTitle());
             stmt.setString(2, artwork.getDescription());
-            stmt.setString(3, artwork.getIdCategory());
-            stmt.setInt(4, artwork.getIdUser());
-            stmt.setInt(5, artwork.getId());
+            stmt.setLong(3, artwork.getIdCategory());
+            stmt.setLong(4, artwork.getIdUser());
+            stmt.setLong(5, artwork.getId());
 
             stmt.executeUpdate();
             System.out.println("Artwork atualizada!");
@@ -96,5 +92,30 @@ public class ArtworkDAO {
         } catch (SQLException e) {
             System.out.println("Erro ao deletar artwork: " + e.getMessage());
         }
+    }
+
+    public Artwork findById(int id) {
+        String sql = "SELECT * FROM artworks WHERE id = ?";
+        Artwork artwork = null;
+
+        try (Connection conn = ConnectionFactory.connect();
+            PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, id);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                artwork = new Artwork();
+                artwork.setId(rs.getInt("id"));
+                artwork.setTitle(rs.getString("title"));
+                artwork.setDescription(rs.getString("description"));
+                artwork.setIdCategory(rs.getLong("id_category"));
+                // IMPORTANTE: Aqui recuperamos o ID do usuário original
+                artwork.setIdUser(rs.getLong("id_user")); // ou "user_id" se você mudou no banco
+            }
+        } catch (SQLException e) {
+            System.out.println("Erro ao buscar artwork: " + e.getMessage());
+        }
+        return artwork;
     }
 }

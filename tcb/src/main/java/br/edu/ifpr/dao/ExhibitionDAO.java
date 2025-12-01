@@ -12,24 +12,24 @@ import br.edu.ifpr.model.Exhibition;
 
 public class ExhibitionDAO {
 
-    public void create(Exhibition exhibition) {
+   public void create(Exhibition exhibition) {
+        // CORREÇÃO: Adicionei a sexta interrogação '?'
         String sql = "INSERT INTO exhibitions " +
                 "(id_creator, name, theme, description, start_date, end_date) " +
-                "VALUES (?, ?, ?, ?, ?)";
+                "VALUES (?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = ConnectionFactory.connect();
-                PreparedStatement stmt = conn.prepareStatement(sql)) {
+            PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setLong(1, exhibition.getIdCreator());
             stmt.setString(2, exhibition.getName());
             stmt.setString(3, exhibition.getTheme());
-            stmt.setString(3, exhibition.getDescription());
-            stmt.setString(4, exhibition.getStartDate());
-            stmt.setString(5, exhibition.getEndDate());
+            stmt.setString(4, exhibition.getDescription()); // CORREÇÃO: Índice 4
+            stmt.setString(5, exhibition.getStartDate());   // CORREÇÃO: Índice 5
+            stmt.setString(6, exhibition.getEndDate());     // CORREÇÃO: Índice 6
 
             stmt.executeUpdate();
             System.out.println("Exibição criada com sucesso!");
-
         } catch (SQLException e) {
             System.out.println("Erro ao criar exibição: " + e.getMessage());
         }
@@ -74,10 +74,10 @@ public class ExhibitionDAO {
             stmt.setLong(1, exhibition.getIdCreator());
             stmt.setString(2, exhibition.getName());
             stmt.setString(3, exhibition.getTheme());
-            stmt.setString(3, exhibition.getDescription());
-            stmt.setString(4, exhibition.getStartDate());
-            stmt.setString(5, exhibition.getEndDate());
-            stmt.setLong(6, exhibition.getId());
+            stmt.setString(4, exhibition.getDescription());
+            stmt.setString(5, exhibition.getStartDate());
+            stmt.setString(6, exhibition.getEndDate());
+            stmt.setLong(7, exhibition.getId());
 
             stmt.executeUpdate();
             System.out.println("Exibição atualizada!");

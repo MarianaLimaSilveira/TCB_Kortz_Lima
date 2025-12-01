@@ -8,24 +8,23 @@ import br.edu.ifpr.model.Rating;
 
 public class RatingDAO {
 
-    public void create(Rating rating) {
-        String sql = "INSERT INTO reviews " +
-                "(artwork_id, exhibition_id, user_id, note, text) " +
-                "VALUES (?, ?, ?, ?, ?)";
+   public void create(Rating rating) {
+        // CORREÇÃO: Nomes das colunas batendo com o banco (id_artwork, id_user, id_exhibition)
+        String sql = "INSERT INTO reviews (id_artwork, id_exhibition, id_user, note, text) VALUES (?, ?, ?, ?, ?)";
 
         try (Connection conn = ConnectionFactory.connect();
-                PreparedStatement stmt = conn.prepareStatement(sql)) {
+            PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             if (rating.getArtworkId() != null) {
                 stmt.setLong(1, rating.getArtworkId());
             } else {
-                stmt.setNull(1, Types.BIGINT);
+                stmt.setNull(1, java.sql.Types.BIGINT);
             }
 
             if (rating.getExhibitionId() != null) {
                 stmt.setLong(2, rating.getExhibitionId());
             } else {
-                stmt.setNull(2, Types.BIGINT);
+                stmt.setNull(2, java.sql.Types.BIGINT);
             }
 
             stmt.setLong(3, rating.getUserId());
@@ -33,10 +32,9 @@ public class RatingDAO {
             stmt.setString(5, rating.getText());
 
             stmt.executeUpdate();
-            System.out.println("Rating criada com sucesso!");
-
+            System.out.println("Avaliação criada!");
         } catch (SQLException e) {
-            System.out.println("Erro ao criar rating: " + e.getMessage());
+            System.out.println("Erro ao criar avaliação: " + e.getMessage());
         }
     }
 
@@ -119,6 +117,18 @@ public class RatingDAO {
 
         } catch (SQLException e) {
             System.out.println("Erro ao deletar rating: " + e.getMessage());
+        }
+    }
+
+    public boolean existsByUserId(int userId) {
+        String sql = "SELECT 1 FROM reviews WHERE id_user = ? LIMIT 1";
+        try (Connection conn = ConnectionFactory.connect();
+            PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, userId);
+            ResultSet rs = stmt.executeQuery();
+            return rs.next();
+        } catch (SQLException e) {
+            return false;
         }
     }
 }

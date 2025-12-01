@@ -163,7 +163,7 @@ public class Main {
                     System.out.print("Descrição: ");
                     a.setDescription(sc.nextLine());
                     System.out.print("Categoria (string): ");
-                    a.setIdCategory(sc.nextLine());
+                    a.setIdCategory(sc.nextLong());
                     a.setIdUser((int) Sessao.getUsuarioLogado().getId());
                     artC.createArtwork(a);
                 }
