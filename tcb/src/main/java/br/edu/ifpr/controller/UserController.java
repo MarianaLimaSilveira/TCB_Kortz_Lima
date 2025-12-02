@@ -28,33 +28,34 @@ public class UserController {
         userDAO.update(user);
     }
 
-    public void deleteUser(int userId) {
-        if (usuarioTemRatings(userId)) {
+    public void deleteUser(int id_user) {
+        if (usuarioTemRatings(id_user)) {
             System.out.println("O usuário possui avaliações e não pode ser excluído (apenas suspenso).");
             return;
         }
-        userDAO.delete(userId);
+        userDAO.delete(id_user);
     }
 
-    private boolean usuarioTemRatings(int userId) {
+    private boolean usuarioTemRatings(int id_user) {
         List<Rating> ratings = ratingDAO.readAll();
-        if (ratings == null) return false;
-        return ratings.stream().anyMatch(r -> r.getUserId() == userId);
+        if (ratings == null)
+            return false;
+        return ratings.stream().anyMatch(r -> r.getUserId() == id_user);
     }
 
     public boolean login(String email, String senha) {
         User u = userDAO.findByEmail(email);
-    
+
         if (u == null) {
             return false;
         }
-    
+
         if (!u.getPassword().equals(senha)) {
             return false;
         }
-    
+
         Sessao.setUsuarioLogado(u);
-    
+
         return true;
     }
 }

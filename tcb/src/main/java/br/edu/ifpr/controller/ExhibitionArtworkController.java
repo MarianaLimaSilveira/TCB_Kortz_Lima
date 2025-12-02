@@ -13,11 +13,10 @@ import br.edu.ifpr.model.Artwork;
 import br.edu.ifpr.model.Exhibition;
 import br.edu.ifpr.model.ExhibitionArtwork;
 
-/**
+//ExhibitionArtworkDAO exige um Connection no construtor, por isso
+//cada operação abre uma Connection em try-with-resources para garantir
+//fechamento.
 
- ExhibitionArtworkDAO exige um Connection no construtor, por isso
- cada operação abre uma Connection em try-with-resources para garantir fechamento.
- */
 public class ExhibitionArtworkController {
 
     private Scanner scanner = new Scanner(System.in);
@@ -55,8 +54,7 @@ public class ExhibitionArtworkController {
         }
     }
 
-
-    public boolean vincularObraExposicao(long exhibitionId, long artworkId) {
+    public boolean vincularObraExposicao(long id_exhibition, long id_artwork) {
         try (Connection conn = ConnectionFactory.connect()) {
             if (conn == null) {
                 System.out.println("Erro: não foi possível conectar ao banco.");
@@ -68,21 +66,21 @@ public class ExhibitionArtworkController {
             ArtworkDAO artworkDAO = new ArtworkDAO();
 
             boolean exExists = exhibitionDAO.readAll().stream()
-                    .anyMatch(e -> e.getId() == exhibitionId);
+                    .anyMatch(e -> e.getId() == id_exhibition);
             boolean artExists = artworkDAO.readAll().stream()
-                    .anyMatch(a -> a.getId() == artworkId);
+                    .anyMatch(a -> a.getId() == id_artwork);
 
             if (!exExists) {
-                System.out.println("Exposição não encontrada (id=" + exhibitionId + ").");
+                System.out.println("Exposição não encontrada (id=" + id_exhibition + ").");
                 return false;
             }
             if (!artExists) {
-                System.out.println("Obra não encontrada (id=" + artworkId + ").");
+                System.out.println("Obra não encontrada (id=" + id_artwork + ").");
                 return false;
             }
 
             boolean jaVinculado = eaDAO.readAll().stream()
-                    .anyMatch(ea -> ea.getExhibitionId() == exhibitionId && ea.getArtworkId() == artworkId);
+                    .anyMatch(ea -> ea.getExhibitionId() == id_exhibition && ea.getArtworkId() == id_artwork);
 
             if (jaVinculado) {
                 System.out.println("⚠ Essa obra já está vinculada a essa exposição.");
@@ -90,8 +88,8 @@ public class ExhibitionArtworkController {
             }
 
             ExhibitionArtwork ea = new ExhibitionArtwork();
-            ea.setExhibitionId(exhibitionId);
-            ea.setArtworkId(artworkId);
+            ea.setExhibitionId(id_exhibition);
+            ea.setArtworkId(id_artwork);
 
             eaDAO.create(ea);
             System.out.println("Vínculo criado com sucesso!");
@@ -103,7 +101,7 @@ public class ExhibitionArtworkController {
         }
     }
 
-    public boolean desvincularObraExposicao(long exhibitionId, long artworkId) {
+    public boolean desvincularObraExposicao(long id_exhibition, long id_artwork) {
         try (Connection conn = ConnectionFactory.connect()) {
             if (conn == null) {
                 System.out.println("Erro: não foi possível conectar ao banco.");
@@ -114,12 +112,13 @@ public class ExhibitionArtworkController {
 
             List<ExhibitionArtwork> lista = eaDAO.readAll();
             ExhibitionArtwork encontrado = lista.stream()
-                    .filter(ea -> ea.getExhibitionId() == exhibitionId && ea.getArtworkId() == artworkId)
+                    .filter(ea -> ea.getExhibitionId() == id_exhibition && ea.getArtworkId() == id_artwork)
                     .findFirst()
                     .orElse(null);
 
             if (encontrado == null) {
-                System.out.println("Vínculo não encontrado entre exposição " + exhibitionId + " e obra " + artworkId + ".");
+                System.out.println(
+                        "Vínculo não encontrado entre exposição " + id_exhibition + " e obra " + id_artwork + ".");
                 return false;
             }
 
@@ -160,7 +159,7 @@ public class ExhibitionArtworkController {
         }
     }
 
-    public void listarObrasDeExposicao(long exhibitionId) {
+    public void listarObrasDeExposicao(long id_exhibition) {
         try (Connection conn = ConnectionFactory.connect()) {
             if (conn == null) {
                 System.out.println("Erro: não foi possível conectar ao banco.");
@@ -171,22 +170,23 @@ public class ExhibitionArtworkController {
             ArtworkDAO artworkDAO = new ArtworkDAO();
 
             List<Long> artworkIds = eaDAO.readAll().stream()
-                    .filter(ea -> ea.getExhibitionId() == exhibitionId)
+                    .filter(ea -> ea.getExhibitionId() == id_exhibition)
                     .map(ExhibitionArtwork::getArtworkId)
                     .collect(Collectors.toList());
 
             if (artworkIds.isEmpty()) {
-                System.out.println("Nenhuma obra vinculada à exposição " + exhibitionId + ".");
+                System.out.println("Nenhuma obra vinculada à exposição " + id_exhibition + ".");
                 return;
             }
 
-            System.out.println("\nObras vinculadas à exposição " + exhibitionId + ":");
+            System.out.println("\nObras vinculadas à exposição " + id_exhibition + ":");
             List<Artwork> obras = artworkDAO.readAll().stream()
                     .filter(a -> artworkIds.contains((long) a.getId()))
                     .collect(Collectors.toList());
 
             for (Artwork a : obras) {
-                System.out.println("ID: " + a.getId() + " | Título: " + a.getTitle() + " | Categoria: " + a.getIdCategory());
+                System.out.println(
+                        "ID: " + a.getId() + " | Título: " + a.getTitle() + " | Categoria: " + a.getIdCategory());
             }
 
         } catch (Exception e) {
@@ -194,7 +194,7 @@ public class ExhibitionArtworkController {
         }
     }
 
-    public void listarExposicoesDeObra(long artworkId) {
+    public void listarExposicoesDeObra(long id_artwork) {
         try (Connection conn = ConnectionFactory.connect()) {
             if (conn == null) {
                 System.out.println("Erro: não foi possível conectar ao banco.");
@@ -205,16 +205,16 @@ public class ExhibitionArtworkController {
             ExhibitionDAO exhibitionDAO = new ExhibitionDAO();
 
             List<Long> exhibitionIds = eaDAO.readAll().stream()
-                    .filter(ea -> ea.getArtworkId() == artworkId)
+                    .filter(ea -> ea.getArtworkId() == id_artwork)
                     .map(ExhibitionArtwork::getExhibitionId)
                     .collect(Collectors.toList());
 
             if (exhibitionIds.isEmpty()) {
-                System.out.println("Nenhuma exposição vinculada à obra " + artworkId + ".");
+                System.out.println("Nenhuma exposição vinculada à obra " + id_artwork + ".");
                 return;
             }
 
-            System.out.println("\nExposições vinculadas à obra " + artworkId + ":");
+            System.out.println("\nExposições vinculadas à obra " + id_artwork + ":");
             List<Exhibition> expos = exhibitionDAO.readAll().stream()
                     .filter(e -> exhibitionIds.contains((long) e.getId()))
                     .collect(Collectors.toList());

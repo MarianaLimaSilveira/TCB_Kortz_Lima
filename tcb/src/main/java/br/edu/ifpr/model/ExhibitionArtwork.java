@@ -3,16 +3,16 @@ package br.edu.ifpr.model;
 public class ExhibitionArtwork {
 
     private Long id;
-    private Long exhibitionId;
-    private Long artworkId;
+    private Long id_exhibition;
+    private Long id_artwork;
 
     public ExhibitionArtwork() {
     }
 
-    public ExhibitionArtwork(Long id, Long exhibitionId, Long artworkId) {
+    public ExhibitionArtwork(Long id, Long id_exhibition, Long id_artwork) {
         this.id = id;
-        this.exhibitionId = exhibitionId;
-        this.artworkId = artworkId;
+        this.id_exhibition = id_exhibition;
+        this.id_artwork = id_artwork;
     }
 
     public Long getId() {
@@ -24,18 +24,18 @@ public class ExhibitionArtwork {
     }
 
     public Long getExhibitionId() {
-        return exhibitionId;
+        return id_exhibition;
     }
 
-    public void setExhibitionId(Long exhibitionId) {
-        this.exhibitionId = exhibitionId;
+    public void setExhibitionId(Long id_exhibition) {
+        this.id_exhibition = id_exhibition;
     }
 
     public Long getArtworkId() {
-        return artworkId;
+        return id_artwork;
     }
 
-    public void setArtworkId(Long artworkId) {
-        this.artworkId = artworkId;
+    public void setArtworkId(Long id_artwork) {
+        this.id_artwork = id_artwork;
     }
 }

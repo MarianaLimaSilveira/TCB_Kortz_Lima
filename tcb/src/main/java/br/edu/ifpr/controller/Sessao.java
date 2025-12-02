@@ -4,7 +4,7 @@ import br.edu.ifpr.model.User;
 
 public class Sessao {
     public static User usuarioLogado;
-  
+
     public static User getUsuarioLogado() {
         return usuarioLogado;
     }
@@ -23,7 +23,6 @@ public class Sessao {
         }
         return usuarioLogado.getId();
     }
-
 
     public static void logout() {
         usuarioLogado = null;

@@ -5,19 +5,19 @@ public class Artwork {
     private long id;
     private String title;
     private String description;
-    private long idCategory;
-    private long idUser;
+    private long id_category;
+    private long id_user;
 
     public Artwork() {
     }
 
     public Artwork(long id, String title, String description,
-            long idCategory, long idUser) {
+            long id_category, long id_user) {
         this.id = id;
         this.title = title;
         this.description = description;
-        this.idCategory = idCategory;
-        this.idUser = idUser;
+        this.id_category = id_category;
+        this.id_user = id_user;
     }
 
     public long getId() {
@@ -45,18 +45,18 @@ public class Artwork {
     }
 
     public long getIdCategory() {
-        return idCategory;
+        return id_category;
     }
 
-    public void setIdCategory(long idCategory) {
-        this.idCategory = idCategory;
+    public void setIdCategory(long id_category) {
+        this.id_category = id_category;
     }
 
     public long getIdUser() {
-        return idUser;
+        return id_user;
     }
 
-    public void setIdUser(long idUser) {
-        this.idUser = idUser;
+    public void setIdUser(long id_user) {
+        this.id_user = id_user;
     }
 }

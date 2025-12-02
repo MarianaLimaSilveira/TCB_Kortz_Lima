@@ -23,18 +23,20 @@ public class CategoryController {
         categoryDAO.update(category);
     }
 
-   public void deleteCategory(Long categoryId) {
+    public void deleteCategory(Long id_category) {
 
-    // CORREÇÃO: Comparar ID com ID (Long com Long)
-    // Antes estava tentando comparar ID com Nome usando equalsIgnoreCase (que é só para texto)
-    boolean categoriaEmUso = artworkDAO.readAll().stream()
-        .anyMatch(a -> a.getIdCategory() == categoryId);
+        // CORREÇÃO: Comparar ID com ID (Long com Long)
+        // Antes estava tentando comparar ID com Nome usando equalsIgnoreCase (que é só
+        // para texto)
+        boolean categoriaEmUso = artworkDAO.readAll().stream()
+                .anyMatch(a -> a.getIdCategory() == id_category);
 
-    if (categoriaEmUso) {
-        System.out.println("Categoria está em uso por obras e não pode ser excluída. Apenas desativação permitida.");
-        return;
+        if (categoriaEmUso) {
+            System.out
+                    .println("Categoria está em uso por obras e não pode ser excluída. Apenas desativação permitida.");
+            return;
+        }
+
+        categoryDAO.delete(id_category);
     }
-    
-    categoryDAO.delete(categoryId);
-}
 }

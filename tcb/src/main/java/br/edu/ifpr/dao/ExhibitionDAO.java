@@ -12,21 +12,20 @@ import br.edu.ifpr.model.Exhibition;
 
 public class ExhibitionDAO {
 
-   public void create(Exhibition exhibition) {
-        // CORREÇÃO: Adicionei a sexta interrogação '?'
+    public void create(Exhibition exhibition) {
         String sql = "INSERT INTO exhibitions " +
                 "(id_creator, name, theme, description, start_date, end_date) " +
                 "VALUES (?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = ConnectionFactory.connect();
-            PreparedStatement stmt = conn.prepareStatement(sql)) {
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setLong(1, exhibition.getIdCreator());
             stmt.setString(2, exhibition.getName());
             stmt.setString(3, exhibition.getTheme());
-            stmt.setString(4, exhibition.getDescription()); // CORREÇÃO: Índice 4
-            stmt.setString(5, exhibition.getStartDate());   // CORREÇÃO: Índice 5
-            stmt.setString(6, exhibition.getEndDate());     // CORREÇÃO: Índice 6
+            stmt.setString(4, exhibition.getDescription());
+            stmt.setString(5, exhibition.getStartDate());
+            stmt.setString(6, exhibition.getEndDate());
 
             stmt.executeUpdate();
             System.out.println("Exibição criada com sucesso!");

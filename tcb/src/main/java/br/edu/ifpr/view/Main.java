@@ -79,11 +79,83 @@ public class Main {
         
         menuPrincipal();
 
+<<<<<<< HEAD
 
     }
 
     public static void menuPrincipal(){
         int op = -1;
+=======
+        System.out.println("\nBem-vindo, " + Sessao.getUsuarioLogado().getUsername() + "!");
+
+        User logadoUser = Sessao.getUsuarioLogado();
+
+        if (logadoUser.getBiography() == null || logadoUser.getBiography().isBlank() ||
+                logadoUser.getProfilePhoto() == null || logadoUser.getProfilePhoto().isBlank()) {
+
+            System.out.println("Seu perfil está incompleto. Deseja completar agora? (S/N)");
+            String resp = sc.nextLine().trim().toUpperCase();
+
+            if (resp.equals("S")) {
+
+                System.out.print("Digite sua bio: ");
+                logadoUser.setBiography(sc.nextLine());
+
+                System.out.print("URL da foto de perfil: ");
+                logadoUser.setProfilePhoto(sc.nextLine());
+
+                userController.updateUser(logadoUser);
+
+                System.out.println("Perfil atualizado!");
+            } else {
+                System.out.println("Ok! Você pode completar mais tarde.");
+            }
+        }
+
+        int op = -1;
+
+        while (op != 0) {
+            System.out.println("\n=== MENU PRINCIPAL ===");
+            System.out.println("1 - Usuários");
+            System.out.println("2 - Obras");
+            System.out.println("3 - Exposições");
+            System.out.println("4 - Categorias");
+            System.out.println("5 - Avaliações");
+            System.out.println("6 - Vínculo Exposição↔Obra");
+            System.out.println("0 - Sair");
+            System.out.print("Escolha: ");
+
+            try {
+                op = Integer.parseInt(sc.nextLine());
+            } catch (Exception e) {
+                op = -1;
+            }
+
+            switch (op) {
+
+                case 1 -> menuUsuarios(userController);
+                case 2 -> menuObras(artworkController);
+                case 3 -> menuExposicoes(exhibitionController);
+                case 4 -> menuCategorias(categoryController);
+                case 5 -> menuAvaliacoes(ratingController);
+                case 6 -> eaController.menuExhibitionArtwork();
+                case 0 -> System.out.println("Encerrando...");
+                default -> System.out.println("Opção inválida.");
+            }
+        }
+    }
+
+    public static void completarPerfil(User u, Scanner sc) {
+
+        System.out.print("Digite sua bio: ");
+        u.setBiography(sc.nextLine());
+
+        System.out.print("URL da sua foto de perfil: ");
+        u.setProfilePhoto(sc.nextLine());
+
+        System.out.println("Perfil atualizado!");
+    }
+>>>>>>> e1cd9304715af9cee413dbb57a87aeb39b0c885f
 
                 while (op != 0) {
                     System.out.println("\n=== MENU PRINCIPAL ===");
@@ -125,13 +197,17 @@ public class Main {
             System.out.println("0 - Voltar");
             System.out.print("Escolha: ");
 
-            try { op = Integer.parseInt(sc.nextLine()); }
-            catch (Exception e) { op = -1; }
+            try {
+                op = Integer.parseInt(sc.nextLine());
+            } catch (Exception e) {
+                op = -1;
+            }
 
             switch (op) {
-                case 1 -> userC.listUsers().forEach(u -> 
-                    System.out.println(u.getId() + " | " + u.getUsername() + " | " + u.getEmail()));
-                
+                case 1 -> userC.listUsers()
+                        .forEach(u -> System.out.println(
+                                u.getId() + " | " + u.getUsername() + " | " + u.getEmail()));
+
                 case 2 -> {
                     User u = new User();
                     System.out.print("Username: ");
@@ -140,6 +216,14 @@ public class Main {
                     u.setEmail(sc.nextLine());
                     System.out.print("Senha: ");
                     u.setPassword(sc.nextLine());
+
+                    System.out.print("Deseja completar seu perfil agora? (s/n): ");
+                    String resp = sc.nextLine();
+
+                    if (resp.equalsIgnoreCase("s")) {
+                        completarPerfil(u, sc);
+                    }
+
                     userC.createUser(u);
                 }
 
@@ -148,9 +232,20 @@ public class Main {
                     int id = Integer.parseInt(sc.nextLine());
                     User u = userC.listUsers().stream()
                             .filter(x -> x.getId() == id).findFirst().orElse(null);
-                    if (u == null) { System.out.println("Não encontrado."); break; }
+
+                    if (u == null) {
+                        System.out.println("Não encontrado.");
+                        break;
+                    }
+
                     System.out.print("Novo username: ");
                     u.setUsername(sc.nextLine());
+
+                    System.out.print("Deseja atualizar também bio/foto? (s/n): ");
+                    if (sc.nextLine().equalsIgnoreCase("s")) {
+                        completarPerfil(u, sc);
+                    }
+
                     userC.updateUser(u);
                 }
 
@@ -160,14 +255,19 @@ public class Main {
                     userC.deleteUser(id);
                 }
 
-                case 0 -> {}
+                case 0 -> {
+                }
                 default -> System.out.println("Opção inválida.");
             }
         }
     }
 
+<<<<<<< HEAD
 
     private static void menuObras() {
+=======
+    private static void menuObras(ArtworkController artC) {
+>>>>>>> e1cd9304715af9cee413dbb57a87aeb39b0c885f
         int op = -1;
         while (op != 0) {
             System.out.println("\n--- Obras ---");
@@ -178,11 +278,19 @@ public class Main {
             System.out.println("0 - Voltar");
             System.out.print("Escolha: ");
 
-            try { op = Integer.parseInt(sc.nextLine()); } catch (Exception e) {}
+            try {
+                op = Integer.parseInt(sc.nextLine());
+            } catch (Exception e) {
+            }
 
             switch (op) {
+<<<<<<< HEAD
                 case 1 -> artworkController.listArtworks().forEach(a ->
                     System.out.println(a.getId() + " | " + a.getTitle() + " | Categoria: " + a.getIdCategory()));
+=======
+                case 1 -> artC.listArtworks().forEach(a -> System.out
+                        .println(a.getId() + " | " + a.getTitle() + " | Categoria: " + a.getIdCategory()));
+>>>>>>> e1cd9304715af9cee413dbb57a87aeb39b0c885f
 
                 case 2 -> {
                     Artwork a = new Artwork();
@@ -201,7 +309,10 @@ public class Main {
                     int id = Integer.parseInt(sc.nextLine());
                     Artwork a = artworkController.listArtworks().stream()
                             .filter(x -> x.getId() == id).findFirst().orElse(null);
-                    if (a == null) { System.out.println("Not found"); break; }
+                    if (a == null) {
+                        System.out.println("Not found");
+                        break;
+                    }
                     System.out.print("Novo título: ");
                     a.setTitle(sc.nextLine());
                     artworkController.updateArtwork(a);
@@ -213,13 +324,18 @@ public class Main {
                     artworkController.deleteArtwork(id);
                 }
 
-                case 0 -> {}
+                case 0 -> {
+                }
             }
         }
     }
 
+<<<<<<< HEAD
 
     private static void menuExposicoes() {
+=======
+    private static void menuExposicoes(ExhibitionController exC) {
+>>>>>>> e1cd9304715af9cee413dbb57a87aeb39b0c885f
         int op = -1;
         while (op != 0) {
             System.out.println("\n--- Exposições ---");
@@ -230,11 +346,19 @@ public class Main {
             System.out.println("0 - Voltar");
             System.out.print("Escolha: ");
 
-            try { op = Integer.parseInt(sc.nextLine()); } catch (Exception e) {}
+            try {
+                op = Integer.parseInt(sc.nextLine());
+            } catch (Exception e) {
+            }
 
             switch (op) {
+<<<<<<< HEAD
                 case 1 -> exhibitionController.listExhibitions().forEach(e ->
                     System.out.println(e.getId() + " | " + e.getName() + " | " + e.getTheme()));
+=======
+                case 1 -> exC.listExhibitions()
+                        .forEach(e -> System.out.println(e.getId() + " | " + e.getName() + " | " + e.getTheme()));
+>>>>>>> e1cd9304715af9cee413dbb57a87aeb39b0c885f
 
                 case 2 -> {
                     Exhibition ex = new Exhibition();
@@ -262,13 +386,18 @@ public class Main {
                     exhibitionController.deleteExhibition(id);
                 }
 
-                case 0 -> {}
+                case 0 -> {
+                }
             }
         }
     }
 
+<<<<<<< HEAD
 
     private static void menuCategorias() {
+=======
+    private static void menuCategorias(CategoryController catC) {
+>>>>>>> e1cd9304715af9cee413dbb57a87aeb39b0c885f
         int op = -1;
         while (op != 0) {
             System.out.println("\n--- Categorias ---");
@@ -279,11 +408,18 @@ public class Main {
             System.out.println("0 - Voltar");
             System.out.print("Escolha: ");
 
-            try { op = Integer.parseInt(sc.nextLine()); } catch (Exception e) {}
+            try {
+                op = Integer.parseInt(sc.nextLine());
+            } catch (Exception e) {
+            }
 
             switch (op) {
+<<<<<<< HEAD
                 case 1 -> categoryController.listCategories().forEach(c ->
                     System.out.println(c.getId() + " | " + c.getName()));
+=======
+                case 1 -> catC.listCategories().forEach(c -> System.out.println(c.getId() + " | " + c.getName()));
+>>>>>>> e1cd9304715af9cee413dbb57a87aeb39b0c885f
 
                 case 2 -> {
                     Category c = new Category();
@@ -302,13 +438,18 @@ public class Main {
                     categoryController.deleteCategory(id);
                 }
 
-                case 0 -> {}
+                case 0 -> {
+                }
             }
         }
     }
 
+<<<<<<< HEAD
 
     private static void menuAvaliacoes() {
+=======
+    private static void menuAvaliacoes(RatingController rC) {
+>>>>>>> e1cd9304715af9cee413dbb57a87aeb39b0c885f
         int op = -1;
         while (op != 0) {
             System.out.println("\n--- Avaliações ---");
@@ -317,12 +458,20 @@ public class Main {
             System.out.println("0 - Voltar");
             System.out.print("Escolha: ");
 
-            try { op = Integer.parseInt(sc.nextLine()); } catch (Exception e) {}
+            try {
+                op = Integer.parseInt(sc.nextLine());
+            } catch (Exception e) {
+            }
 
             switch (op) {
+<<<<<<< HEAD
                 case 1 -> ratingController.listRatings().forEach(r ->
                     System.out.println(r.getId() + " | Nota: " + r.getNote() + " | Texto: " + r.getText())
                 );
+=======
+                case 1 -> rC.listRatings().forEach(
+                        r -> System.out.println(r.getId() + " | Nota: " + r.getNote() + " | Texto: " + r.getText()));
+>>>>>>> e1cd9304715af9cee413dbb57a87aeb39b0c885f
 
                 case 2 -> {
                     Rating r = new Rating();
@@ -330,11 +479,13 @@ public class Main {
 
                     System.out.print("Avaliar obra (id) ou ENTER para pular: ");
                     String obraStr = sc.nextLine();
-                    if (!obraStr.isEmpty()) r.setArtworkId(Long.parseLong(obraStr));
+                    if (!obraStr.isEmpty())
+                        r.setArtworkId(Long.parseLong(obraStr));
 
                     System.out.print("Avaliar exposição (id) ou ENTER para pular: ");
                     String expStr = sc.nextLine();
-                    if (!expStr.isEmpty()) r.setExhibitionId(Long.parseLong(expStr));
+                    if (!expStr.isEmpty())
+                        r.setExhibitionId(Long.parseLong(expStr));
 
                     System.out.print("Nota (1-5): ");
                     r.setNote(Integer.parseInt(sc.nextLine()));
@@ -345,9 +496,9 @@ public class Main {
                     ratingController.createRating(r);
                 }
 
-                case 0 -> {}
+                case 0 -> {
+                }
             }
         }
     }
-
 }
