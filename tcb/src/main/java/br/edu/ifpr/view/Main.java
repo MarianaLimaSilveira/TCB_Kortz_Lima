@@ -20,70 +20,101 @@ public class Main {
 
     static Scanner sc = new Scanner(System.in);
 
+    final static UserController userC = new UserController();
+    final static RatingController ratingController = new RatingController();
+    final static ArtworkController artworkController = new ArtworkController(ConnectionFactory.connect());
+    final static ExhibitionController exhibitionController = new ExhibitionController(ConnectionFactory.connect());
+    final static ExhibitionArtworkController eaController = new ExhibitionArtworkController();
+    final static CategoryController categoryController = new CategoryController();
+
     public static void main(String[] args) {
 
-        UserController userController = new UserController();
-        RatingController ratingController = new RatingController();
-
-        ArtworkController artworkController = new ArtworkController(ConnectionFactory.connect());
-        ExhibitionController exhibitionController = new ExhibitionController(ConnectionFactory.connect());
-        ExhibitionArtworkController eaController = new ExhibitionArtworkController();
-
-        CategoryController categoryController = new CategoryController();
-
+        int op1 = -2;
+        int saida = 59;
         System.out.println("=== Sistema de Arte Digital ===");
 
-        boolean logado = false;
-        while (!logado) {
-            System.out.println("\n1 - login");
-            System.out.print("Email: ");
-            String email = sc.nextLine();
-            System.out.print("Senha: ");
-            String senha = sc.nextLine();
 
-            logado = userController.login(email, senha);
+        while (saida==59) {
+            System.out.println("Escolha o método de inicialização");
+            System.out.println("1 - login");
+            System.out.println("2 - Criar usuário");
+            try { op1 = Integer.parseInt(sc.nextLine()); } catch (Exception e) {}
 
-            if (!logado) {
-                System.out.println("Login inválido. Tente novamente.");
+            switch (op1) {
+            case 1:
+                 boolean logado = false;
+                while (!logado) {
+                    System.out.println("\n--- Login ---");
+                    System.out.print("Email: ");
+                    String email = sc.nextLine();
+                    System.out.print("Senha: ");
+                    String senha = sc.nextLine();
+
+                    logado = userC.login(email, senha);
+
+                    if (!logado) {
+                        System.out.println("Login inválido. Tente novamente.");
+                    }
+                }
+
+                System.out.println("\nBem-vindo, " + Sessao.getUsuarioLogado().getUsername() + "!");
+                saida = 0;
+                break;
+            case 2:
+                User u = new User();
+                    System.out.print("Username: ");
+                    u.setUsername(sc.nextLine());
+                    System.out.print("Email: ");
+                    u.setEmail(sc.nextLine());
+                    System.out.print("Senha: ");
+                    u.setPassword(sc.nextLine());
+                    userC.createUser(u);
+                saida = 0;
+                break;
+            default:
+                System.out.println("Opção inválida, tente novamente");
+                break;
             }
         }
+        
+        menuPrincipal();
 
-        System.out.println("\nBem-vindo, " + Sessao.getUsuarioLogado().getUsername() + "!");
-
-    
-        int op = -1;
-
-        while (op != 0) {
-            System.out.println("\n=== MENU PRINCIPAL ===");
-            System.out.println("1 - Usuários");
-            System.out.println("2 - Obras");
-            System.out.println("3 - Exposições");
-            System.out.println("4 - Categorias");
-            System.out.println("5 - Avaliações");
-            System.out.println("6 - Vínculo Exposição↔Obra");
-            System.out.println("0 - Sair");
-            System.out.print("Escolha: ");
-            
-            try { op = Integer.parseInt(sc.nextLine()); }
-            catch (Exception e) { op = -1; }
-
-            switch(op) {
-
-                case 1 -> menuUsuarios(userController);
-                case 2 -> menuObras(artworkController);
-                case 3 -> menuExposicoes(exhibitionController);
-                case 4 -> menuCategorias(categoryController);
-                case 5 -> menuAvaliacoes(ratingController);
-                case 6 -> eaController.menuExhibitionArtwork();
-                case 0 -> System.out.println("Encerrando...");
-                default -> System.out.println("Opção inválida.");
-            }
-        }
 
     }
 
+    public static void menuPrincipal(){
+        int op = -1;
 
-    private static void menuUsuarios(UserController userC) {
+                while (op != 0) {
+                    System.out.println("\n=== MENU PRINCIPAL ===");
+                    System.out.println("1 - Usuários");
+                    System.out.println("2 - Obras");
+                    System.out.println("3 - Exposições");
+                    System.out.println("4 - Categorias");
+                    System.out.println("5 - Avaliações");
+                    System.out.println("6 - Vínculo Exposição↔Obra");
+                    System.out.println("0 - Sair");
+                    System.out.print("Escolha: ");
+                    
+                    try { op = Integer.parseInt(sc.nextLine()); }
+                    catch (Exception e) { op = -1; }
+
+                    switch(op) {
+
+                        case 1 -> menuUsuarios();
+                        case 2 -> menuObras();
+                        case 3 -> menuExposicoes();
+                        case 4 -> menuCategorias();
+                        case 5 -> menuAvaliacoes();
+                        case 6 -> eaController.menuExhibitionArtwork();
+                        case 0 -> System.out.println("Encerrando...");
+                        default -> System.out.println("Opção inválida.");
+                    }
+                }
+    }
+
+
+    private static void menuUsuarios( ) {
         int op = -1;
         while (op != 0) {
             System.out.println("\n--- Usuários ---");
@@ -136,7 +167,7 @@ public class Main {
     }
 
 
-    private static void menuObras(ArtworkController artC) {
+    private static void menuObras() {
         int op = -1;
         while (op != 0) {
             System.out.println("\n--- Obras ---");
@@ -150,7 +181,7 @@ public class Main {
             try { op = Integer.parseInt(sc.nextLine()); } catch (Exception e) {}
 
             switch (op) {
-                case 1 -> artC.listArtworks().forEach(a ->
+                case 1 -> artworkController.listArtworks().forEach(a ->
                     System.out.println(a.getId() + " | " + a.getTitle() + " | Categoria: " + a.getIdCategory()));
 
                 case 2 -> {
@@ -162,24 +193,24 @@ public class Main {
                     System.out.print("Categoria (string): ");
                     a.setIdCategory(sc.nextLong());
                     a.setIdUser((int) Sessao.getUsuarioLogado().getId());
-                    artC.createArtwork(a);
+                    artworkController.createArtwork(a);
                 }
 
                 case 3 -> {
                     System.out.print("ID da obra: ");
                     int id = Integer.parseInt(sc.nextLine());
-                    Artwork a = artC.listArtworks().stream()
+                    Artwork a = artworkController.listArtworks().stream()
                             .filter(x -> x.getId() == id).findFirst().orElse(null);
                     if (a == null) { System.out.println("Not found"); break; }
                     System.out.print("Novo título: ");
                     a.setTitle(sc.nextLine());
-                    artC.updateArtwork(a);
+                    artworkController.updateArtwork(a);
                 }
 
                 case 4 -> {
                     System.out.print("ID da obra: ");
                     int id = Integer.parseInt(sc.nextLine());
-                    artC.deleteArtwork(id);
+                    artworkController.deleteArtwork(id);
                 }
 
                 case 0 -> {}
@@ -188,7 +219,7 @@ public class Main {
     }
 
 
-    private static void menuExposicoes(ExhibitionController exC) {
+    private static void menuExposicoes() {
         int op = -1;
         while (op != 0) {
             System.out.println("\n--- Exposições ---");
@@ -202,7 +233,7 @@ public class Main {
             try { op = Integer.parseInt(sc.nextLine()); } catch (Exception e) {}
 
             switch (op) {
-                case 1 -> exC.listExhibitions().forEach(e ->
+                case 1 -> exhibitionController.listExhibitions().forEach(e ->
                     System.out.println(e.getId() + " | " + e.getName() + " | " + e.getTheme()));
 
                 case 2 -> {
@@ -220,7 +251,7 @@ public class Main {
                     System.out.print("Data fim: ");
                     ex.setEndDate(sc.nextLine());
 
-                    exC.createExhibition(ex);
+                    exhibitionController.createExhibition(ex);
                 }
 
                 case 3 -> System.out.println("Implementação simples: atualize direto no DB se precisar.");
@@ -228,7 +259,7 @@ public class Main {
                 case 4 -> {
                     System.out.print("ID da exposição: ");
                     int id = Integer.parseInt(sc.nextLine());
-                    exC.deleteExhibition(id);
+                    exhibitionController.deleteExhibition(id);
                 }
 
                 case 0 -> {}
@@ -237,7 +268,7 @@ public class Main {
     }
 
 
-    private static void menuCategorias(CategoryController catC) {
+    private static void menuCategorias() {
         int op = -1;
         while (op != 0) {
             System.out.println("\n--- Categorias ---");
@@ -251,7 +282,7 @@ public class Main {
             try { op = Integer.parseInt(sc.nextLine()); } catch (Exception e) {}
 
             switch (op) {
-                case 1 -> catC.listCategories().forEach(c ->
+                case 1 -> categoryController.listCategories().forEach(c ->
                     System.out.println(c.getId() + " | " + c.getName()));
 
                 case 2 -> {
@@ -260,7 +291,7 @@ public class Main {
                     c.setName(sc.nextLine());
                     System.out.print("Descrição: ");
                     c.setDescription(sc.nextLine());
-                    catC.createCategory(c);
+                    categoryController.createCategory(c);
                 }
 
                 case 3 -> System.out.println("Atualização simplificada, altere no DB se necessário.");
@@ -268,7 +299,7 @@ public class Main {
                 case 4 -> {
                     System.out.print("ID da categoria: ");
                     long id = Long.parseLong(sc.nextLine());
-                    catC.deleteCategory(id);
+                    categoryController.deleteCategory(id);
                 }
 
                 case 0 -> {}
@@ -277,7 +308,7 @@ public class Main {
     }
 
 
-    private static void menuAvaliacoes(RatingController rC) {
+    private static void menuAvaliacoes() {
         int op = -1;
         while (op != 0) {
             System.out.println("\n--- Avaliações ---");
@@ -289,7 +320,7 @@ public class Main {
             try { op = Integer.parseInt(sc.nextLine()); } catch (Exception e) {}
 
             switch (op) {
-                case 1 -> rC.listRatings().forEach(r ->
+                case 1 -> ratingController.listRatings().forEach(r ->
                     System.out.println(r.getId() + " | Nota: " + r.getNote() + " | Texto: " + r.getText())
                 );
 
@@ -311,7 +342,7 @@ public class Main {
                     System.out.print("Comentário: ");
                     r.setText(sc.nextLine());
 
-                    rC.createRating(r);
+                    ratingController.createRating(r);
                 }
 
                 case 0 -> {}
