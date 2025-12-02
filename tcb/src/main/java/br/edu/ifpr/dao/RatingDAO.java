@@ -8,12 +8,11 @@ import br.edu.ifpr.model.Rating;
 
 public class RatingDAO {
 
-   public void create(Rating rating) {
-        // CORREÇÃO: Nomes das colunas batendo com o banco (id_artwork, id_user, id_exhibition)
+    public void create(Rating rating) {
         String sql = "INSERT INTO reviews (id_artwork, id_exhibition, id_user, note, text) VALUES (?, ?, ?, ?, ?)";
 
         try (Connection conn = ConnectionFactory.connect();
-            PreparedStatement stmt = conn.prepareStatement(sql)) {
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             if (rating.getArtworkId() != null) {
                 stmt.setLong(1, rating.getArtworkId());
@@ -123,7 +122,7 @@ public class RatingDAO {
     public boolean existsByUserId(int userId) {
         String sql = "SELECT 1 FROM reviews WHERE id_user = ? LIMIT 1";
         try (Connection conn = ConnectionFactory.connect();
-            PreparedStatement stmt = conn.prepareStatement(sql)) {
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, userId);
             ResultSet rs = stmt.executeQuery();
             return rs.next();

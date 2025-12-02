@@ -13,12 +13,10 @@ import br.edu.ifpr.model.Artwork;
 import br.edu.ifpr.model.Exhibition;
 import br.edu.ifpr.model.ExhibitionArtwork;
 
-/**
- * 
- * ExhibitionArtworkDAO exige um Connection no construtor, por isso
- * cada operação abre uma Connection em try-with-resources para garantir
- * fechamento.
- */
+//ExhibitionArtworkDAO exige um Connection no construtor, por isso
+//cada operação abre uma Connection em try-with-resources para garantir
+//fechamento.
+
 public class ExhibitionArtworkController {
 
     private Scanner scanner = new Scanner(System.in);

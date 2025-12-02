@@ -50,7 +50,6 @@ public class Main {
 
         System.out.println("\nBem-vindo, " + Sessao.getUsuarioLogado().getUsername() + "!");
 
-        // ---- VERIFICAR PERFIL COMPLETO ----
         User logadoUser = Sessao.getUsuarioLogado();
 
         if (logadoUser.getBiography() == null || logadoUser.getBiography().isBlank() ||

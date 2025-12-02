@@ -12,7 +12,7 @@ public class Artwork {
     }
 
     public Artwork(long id, String title, String description,
-            long id_category, long idUser) {
+            long id_category, long id_user) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -56,7 +56,7 @@ public class Artwork {
         return id_user;
     }
 
-    public void setIdUser(long idUser) {
+    public void setIdUser(long id_user) {
         this.id_user = id_user;
     }
 }
