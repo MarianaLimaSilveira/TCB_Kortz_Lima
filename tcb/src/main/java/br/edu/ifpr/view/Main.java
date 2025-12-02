@@ -25,7 +25,6 @@ public class Main {
         UserController userController = new UserController();
         RatingController ratingController = new RatingController();
 
-        // controladores que exigem Connection no construtor
         ArtworkController artworkController = new ArtworkController(ConnectionFactory.connect());
         ExhibitionController exhibitionController = new ExhibitionController(ConnectionFactory.connect());
         ExhibitionArtworkController eaController = new ExhibitionArtworkController();
@@ -34,10 +33,9 @@ public class Main {
 
         System.out.println("=== Sistema de Arte Digital ===");
 
-        // ---- LOGIN ----
         boolean logado = false;
         while (!logado) {
-            System.out.println("\n--- Login ---");
+            System.out.println("\n1 - login");
             System.out.print("Email: ");
             String email = sc.nextLine();
             System.out.print("Senha: ");
@@ -85,7 +83,6 @@ public class Main {
     }
 
 
-    // ---------- SUBMENUS ----------
     private static void menuUsuarios(UserController userC) {
         int op = -1;
         while (op != 0) {
