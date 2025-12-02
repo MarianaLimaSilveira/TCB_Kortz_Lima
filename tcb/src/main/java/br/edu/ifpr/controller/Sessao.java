@@ -24,7 +24,6 @@ public class Sessao {
         return usuarioLogado.getId();
     }
 
-
     public static void logout() {
         usuarioLogado = null;
     }

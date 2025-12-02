@@ -30,18 +30,18 @@ public class ArtworkController {
         artworkDAO.update(artwork);
     }
 
-    public void deleteArtwork(int artworkId) {
+    public void deleteArtwork(int id_artwork) {
 
         boolean temRating = ratingDAO.readAll().stream()
-                .anyMatch(r -> r.getArtworkId() != null && r.getArtworkId() == artworkId);
+                .anyMatch(r -> r.getArtworkId() != null && r.getArtworkId() == id_artwork);
 
         boolean temExposicao = eaDAO.readAll().stream()
-                .anyMatch(ea -> ea.getArtworkId() == artworkId);
+                .anyMatch(ea -> ea.getArtworkId() == id_artwork);
 
         if (temRating || temExposicao) {
             System.out.println("Não é permitido excluir uma obra vinculada a exposição ou avaliações.");
             return;
         }
-        artworkDAO.delete(artworkId);
+        artworkDAO.delete(id_artwork);
     }
 }

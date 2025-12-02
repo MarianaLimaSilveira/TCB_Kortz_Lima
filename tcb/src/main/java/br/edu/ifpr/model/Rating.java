@@ -2,9 +2,9 @@ package br.edu.ifpr.model;
 
 public class Rating {
     private Long id;
-    private Long artworkId;
-    private Long exhibitionId;
-    private Long userId;
+    private Long id_artwork;
+    private Long id_exhibition;
+    private Long id_user;
     private Integer note;
     private String text;
 
@@ -20,27 +20,27 @@ public class Rating {
     }
 
     public Long getArtworkId() {
-        return artworkId;
+        return id_artwork;
     }
 
-    public void setArtworkId(Long artworkId) {
-        this.artworkId = artworkId;
+    public void setArtworkId(Long id_artwork) {
+        this.id_artwork = id_artwork;
     }
 
     public Long getExhibitionId() {
-        return exhibitionId;
+        return id_exhibition;
     }
 
-    public void setExhibitionId(Long exhibitionId) {
-        this.exhibitionId = exhibitionId;
+    public void setExhibitionId(Long id_exhibition) {
+        this.id_exhibition = id_exhibition;
     }
 
     public Long getUserId() {
-        return userId;
+        return id_user;
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public void setUserId(Long id_user) {
+        this.id_user = id_user;
     }
 
     public Integer getNote() {

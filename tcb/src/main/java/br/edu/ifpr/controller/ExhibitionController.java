@@ -30,18 +30,18 @@ public class ExhibitionController {
         exhibitionDAO.update(exhibition);
     }
 
-    public void deleteExhibition(int exId) {
+    public void deleteExhibition(int id_exhibition) {
 
         boolean temRating = ratingDAO.readAll()
-                .stream().anyMatch(r -> r.getExhibitionId() != null && r.getExhibitionId() == exId);
+                .stream().anyMatch(r -> r.getExhibitionId() != null && r.getExhibitionId() == id_exhibition);
 
         boolean temObraVinculada = eaDAO.readAll()
-                .stream().anyMatch(ea -> ea.getExhibitionId() == exId);
+                .stream().anyMatch(ea -> ea.getExhibitionId() == id_exhibition);
 
         if (temRating || temObraVinculada) {
             System.out.println("Exposição não pode ser excluída pois possui vínculos ou avaliações!");
             return;
         }
-        exhibitionDAO.delete(exId);
+        exhibitionDAO.delete(id_exhibition);
     }
 }

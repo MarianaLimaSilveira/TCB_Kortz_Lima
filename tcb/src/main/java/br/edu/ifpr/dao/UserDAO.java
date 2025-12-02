@@ -12,38 +12,37 @@ import br.edu.ifpr.model.User;
 
 public class UserDAO {
 
-    public UserDAO() {}
-
-    
-   public void create(User u) {
-    String sql = "INSERT INTO users (username, email, password, location, profile_photo, biography) VALUES (?, ?, ?, ?, ?, ?)";
-
-    // CORREÇÃO: Tudo dentro do try(...) para fechar automático
-    try (Connection conn = ConnectionFactory.connect();
-         PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-
-        stmt.setString(1, u.getUsername());
-        stmt.setString(2, u.getEmail());
-        stmt.setString(3, u.getPassword());
-        stmt.setString(4, u.getLocation());
-        stmt.setString(5, u.getProfilePhoto());
-        stmt.setString(6, u.getBiography());
-
-        stmt.executeUpdate();
-
-        ResultSet keys = stmt.getGeneratedKeys();
-        if (keys.next()) {
-            u.setId(keys.getInt(1));
-        }
-        keys.close(); // Boa prática fechar o ResultSet também
-        System.out.println("Usuário criado com sucesso!");
-
-    } catch (SQLException e) {
-        System.out.println("Erro ao criar usuário: " + e.getMessage());
+    public UserDAO() {
     }
-}
 
-    
+    public void create(User u) {
+        String sql = "INSERT INTO users (username, email, password, location, profile_photo, biography) VALUES (?, ?, ?, ?, ?, ?)";
+
+        // CORREÇÃO: Tudo dentro do try(...) para fechar automático
+        try (Connection conn = ConnectionFactory.connect();
+                PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+
+            stmt.setString(1, u.getUsername());
+            stmt.setString(2, u.getEmail());
+            stmt.setString(3, u.getPassword());
+            stmt.setString(4, u.getLocation());
+            stmt.setString(5, u.getProfilePhoto());
+            stmt.setString(6, u.getBiography());
+
+            stmt.executeUpdate();
+
+            ResultSet keys = stmt.getGeneratedKeys();
+            if (keys.next()) {
+                u.setId(keys.getInt(1));
+            }
+            keys.close(); // Boa prática fechar o ResultSet também
+            System.out.println("Usuário criado com sucesso!");
+
+        } catch (SQLException e) {
+            System.out.println("Erro ao criar usuário: " + e.getMessage());
+        }
+    }
+
     public List<User> readAll() {
         List<User> users = new ArrayList<>();
         String sql = "SELECT * FROM users";
@@ -75,7 +74,6 @@ public class UserDAO {
 
         return users;
     }
-
 
     public User findById(long id) {
         String sql = "SELECT * FROM users WHERE id = ?";
@@ -111,7 +109,6 @@ public class UserDAO {
         return null;
     }
 
-   
     public User findByEmail(String email) {
         String sql = "SELECT * FROM users WHERE email = ?";
 
@@ -146,7 +143,6 @@ public class UserDAO {
         return null;
     }
 
-    
     public void update(User u) {
         String sql = "UPDATE users SET username = ?, email = ?, password = ?, location = ?, profile_photo = ?, biography = ? WHERE id = ?";
 
@@ -172,7 +168,6 @@ public class UserDAO {
         }
     }
 
-   
     public void delete(int userId) {
         String sql = "DELETE FROM users WHERE id = ?";
 

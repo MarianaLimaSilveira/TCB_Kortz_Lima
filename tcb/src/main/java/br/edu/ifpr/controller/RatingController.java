@@ -17,13 +17,9 @@ public class RatingController {
         }
 
         boolean jaExiste = ratingDAO.readAll().stream()
-                .anyMatch(r ->
-                        r.getUserId() == rating.getUserId() &&
-                        (
-                                (r.getArtworkId() != null && r.getArtworkId().equals(rating.getArtworkId())) ||
-                                (r.getExhibitionId() != null && r.getExhibitionId().equals(rating.getExhibitionId()))
-                        )
-                );
+                .anyMatch(r -> r.getUserId() == rating.getUserId() &&
+                        ((r.getArtworkId() != null && r.getArtworkId().equals(rating.getArtworkId())) ||
+                                (r.getExhibitionId() != null && r.getExhibitionId().equals(rating.getExhibitionId()))));
 
         if (jaExiste) {
             System.out.println("Usuário já avaliou este item.");
