@@ -51,13 +51,13 @@ public class RatingDAO {
 
                 r.setId(rs.getLong("id"));
 
-                Long artworkId = rs.getLong("artwork_id");
+                Long artworkId = rs.getLong("id_artwork");
                 r.setArtworkId(rs.wasNull() ? null : artworkId);
 
-                Long exhibitionId = rs.getLong("exhibition_id");
+                Long exhibitionId = rs.getLong("id_exhibition");
                 r.setExhibitionId(rs.wasNull() ? null : exhibitionId);
 
-                r.setUserId(rs.getLong("user_id"));
+                r.setUserId(rs.getLong("id_user"));
                 r.setNote(rs.getInt("note"));
                 r.setText(rs.getString("text"));
 
@@ -73,7 +73,7 @@ public class RatingDAO {
 
     public void update(Rating rating) {
         String sql = "UPDATE reviews " +
-                "SET artwork_id=?, exhibition_id=?, user_id=?, note=?, text=? " +
+                "SET id_artwork=?, id_exhibition=?, id_user=?, note=?, text=? " +
                 "WHERE id=?";
 
         try (Connection conn = ConnectionFactory.connect();

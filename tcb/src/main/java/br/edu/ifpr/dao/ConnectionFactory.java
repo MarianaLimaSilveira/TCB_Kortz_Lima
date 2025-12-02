@@ -11,13 +11,11 @@ public class ConnectionFactory {
 
     public static Connection connect(){
         try {
-            // AQUI ESTA A CORREÇÃO:
-            // Verificamos se é nula OU se a conexão foi fechada anteriormente
             if(conn == null || conn.isClosed()){ 
                 
-                String url = "jdbc:mysql://localhost:3306/TCB_lima_kortz";
-                String user= "root";
-                String password="belinha"; // Certifique-se que a senha é essa mesmo
+                String url = "jdbc:mysql://127.0.0.1:3306/tcb_lima_kortz";
+                String user= "aluno";
+                String password="aluno";
                 
                 conn = DriverManager.getConnection(url, user, password);
                 System.out.println("Conectado ao banco com sucesso!");
