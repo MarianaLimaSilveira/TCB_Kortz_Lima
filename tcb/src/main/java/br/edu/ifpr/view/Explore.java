@@ -1,9 +1,19 @@
 package br.edu.ifpr.view;
 
 import java.util.List;
-import br.edu.ifpr.controller.*;
+
+import br.edu.ifpr.controller.ArtworkController;
+import br.edu.ifpr.controller.CategoryController;
+import br.edu.ifpr.controller.ExhibitionArtworkController;
+import br.edu.ifpr.controller.ExhibitionController;
+import br.edu.ifpr.controller.RatingController;
+import br.edu.ifpr.controller.UserController;
 import br.edu.ifpr.dao.ExhibitionArtworkDAO;
-import br.edu.ifpr.model.*;
+import br.edu.ifpr.model.Artwork;
+import br.edu.ifpr.model.Exhibition;
+import br.edu.ifpr.model.ExhibitionArtwork;
+import br.edu.ifpr.model.Rating;
+import br.edu.ifpr.model.User;
 
 public class Explore {
 
@@ -32,10 +42,9 @@ public class Explore {
     public void menuExplorar() {
         System.out.println("\n=== EXPLORAR ===");
         System.out.println("1. Listar Obras");
-        System.out.println("2. Listar Artistas (com estatisticas)");
+        System.out.println("2. Listar Artistas");
         System.out.println("3. Listar Exposicoes");
         System.out.println("4. Navegar por Categorias");
-        System.out.println("---------------------------");
         System.out.println("5. Ver Detalhes de um Artista");
         System.out.println("6. Ver Obras de uma Exposicao");
         System.out.println("0. Voltar");

@@ -40,7 +40,7 @@ public class ArtworkDAO {
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
 
-            // Itera sobre o ResultSet e mapeia cada linha da tabela para um objeto Artwork
+            // Atua sobre o ResultSet e mapeia cada linha da tabela para um objeto Artwork
             while (rs.next()) {
                 Artwork a = new Artwork();
                 a.setId(rs.getInt("id"));
