@@ -9,13 +9,14 @@ public class RatingController {
     private RatingDAO ratingDAO = new RatingDAO();
 
     public void createRating(Rating rating) {
-        // Validação básica
+        // Validação de entrada: Nota deve ser entre 1 e 5
         if (rating.getNote() < 1 || rating.getNote() > 5) {
             System.out.println("Nota invalida. Permitido apenas entre 1 e 5.");
             return;
         }
 
-        // Verifica se já avaliou ESTE item específico
+        // Regra de Negócio: Um usuário não pode avaliar o mesmo item duas vezes.
+        // Verifica se já existe avaliação desse usuário para essa Obra OU Exposição.
         boolean jaExiste = ratingDAO.readAll().stream()
                 .anyMatch(r -> r.getUserId() == rating.getUserId() &&
                         (
@@ -26,7 +27,7 @@ public class RatingController {
 
         if (jaExiste) {
             System.out.println("Voce ja avaliou este item anteriormente.");
-            return; // Impede duplicação
+            return;
         }
 
         ratingDAO.create(rating);

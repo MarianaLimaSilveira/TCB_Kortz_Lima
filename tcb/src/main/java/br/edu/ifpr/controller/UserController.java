@@ -1,11 +1,11 @@
 package br.edu.ifpr.controller;
 
 import java.util.List;
-
-import br.edu.ifpr.dao.RatingDAO;
 import br.edu.ifpr.dao.UserDAO;
-import br.edu.ifpr.model.Rating;
+import br.edu.ifpr.dao.RatingDAO;
 import br.edu.ifpr.model.User;
+import br.edu.ifpr.model.Rating;
+// imports...
 
 public class UserController {
 
@@ -13,6 +13,7 @@ public class UserController {
     private RatingDAO ratingDAO = new RatingDAO();
 
     public void createUser(User user) {
+        // Validação básica de campos obrigatórios
         if (user.getUsername().isEmpty() || user.getEmail().isEmpty()) {
             System.out.println("Campos obrigatórios não podem estar vazios!");
             return;
@@ -29,6 +30,8 @@ public class UserController {
     }
 
     public void deleteUser(int id_user) {
+        // Regra de Negócio: Não excluímos usuários ativos com histórico (avaliações).
+        // Em um sistema real, faríamos apenas "soft delete" (desativar).
         if (usuarioTemRatings(id_user)) {
             System.out.println("O usuário possui avaliações e não pode ser excluído (apenas suspenso).");
             return;
@@ -36,6 +39,7 @@ public class UserController {
         userDAO.delete(id_user);
     }
 
+    // Método auxiliar para verificar integridade antes de deletar
     private boolean usuarioTemRatings(int id_user) {
         List<Rating> ratings = ratingDAO.readAll();
         if (ratings == null)
@@ -44,16 +48,19 @@ public class UserController {
     }
 
     public boolean login(String email, String senha) {
+        // Busca usuário pelo email para autenticação
         User u = userDAO.findByEmail(email);
 
         if (u == null) {
-            return false;
+            return false; // Usuário não existe
         }
 
+        // Comparação simples de senha (em produção usaria Hash/BCrypt)
         if (!u.getPassword().equals(senha)) {
-            return false;
+            return false; // Senha incorreta
         }
 
+        // Sucesso: Salva o usuário na sessão global
         Sessao.setUsuarioLogado(u);
 
         return true;

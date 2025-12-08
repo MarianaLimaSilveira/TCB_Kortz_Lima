@@ -3,7 +3,6 @@ package br.edu.ifpr.dao;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-
 import br.edu.ifpr.model.Rating;
 
 public class RatingDAO {
@@ -12,15 +11,16 @@ public class RatingDAO {
         String sql = "INSERT INTO reviews (id_artwork, id_exhibition, id_user, note, text) VALUES (?, ?, ?, ?, ?)";
 
         try (Connection conn = ConnectionFactory.connect();
-                PreparedStatement stmt = conn.prepareStatement(sql)) {
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            if (rating.getArtworkId() != null) {
+            // Tratamento de NULL: Se for avaliação de Obra, id_exhibition é NULL (e vice-versa)
+            if (rating.getArtworkId() != null && rating.getArtworkId() > 0) {
                 stmt.setLong(1, rating.getArtworkId());
             } else {
                 stmt.setNull(1, java.sql.Types.BIGINT);
             }
 
-            if (rating.getExhibitionId() != null) {
+            if (rating.getExhibitionId() != null && rating.getExhibitionId() > 0) {
                 stmt.setLong(2, rating.getExhibitionId());
             } else {
                 stmt.setNull(2, java.sql.Types.BIGINT);
@@ -42,14 +42,14 @@ public class RatingDAO {
         String sql = "SELECT * FROM reviews";
 
         try (Connection conn = ConnectionFactory.connect();
-                Statement stmt = conn.createStatement();
-                ResultSet rs = stmt.executeQuery(sql)) {
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
 
             while (rs.next()) {
                 Rating r = new Rating();
-
                 r.setId(rs.getLong("id"));
 
+                // Verifica se o valor veio nulo do banco (wasNull)
                 Long artworkId = rs.getLong("id_artwork");
                 r.setArtworkId(rs.wasNull() ? null : artworkId);
 
@@ -76,19 +76,14 @@ public class RatingDAO {
                 "WHERE id=?";
 
         try (Connection conn = ConnectionFactory.connect();
-                PreparedStatement stmt = conn.prepareStatement(sql)) {
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            if (rating.getArtworkId() != null) {
-                stmt.setLong(1, rating.getArtworkId());
-            } else {
-                stmt.setNull(1, Types.BIGINT);
-            }
+            // Mesma lógica de nulos do create
+            if (rating.getArtworkId() != null) stmt.setLong(1, rating.getArtworkId());
+            else stmt.setNull(1, Types.BIGINT);
 
-            if (rating.getExhibitionId() != null) {
-                stmt.setLong(2, rating.getExhibitionId());
-            } else {
-                stmt.setNull(2, Types.BIGINT);
-            }
+            if (rating.getExhibitionId() != null) stmt.setLong(2, rating.getExhibitionId());
+            else stmt.setNull(2, Types.BIGINT);
 
             stmt.setLong(3, rating.getUserId());
             stmt.setInt(4, rating.getNote());
@@ -107,11 +102,10 @@ public class RatingDAO {
         String sql = "DELETE FROM reviews WHERE id=?";
 
         try (Connection conn = ConnectionFactory.connect();
-                PreparedStatement stmt = conn.prepareStatement(sql)) {
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setLong(1, id);
             stmt.executeUpdate();
-
             System.out.println("Rating deletada!");
 
         } catch (SQLException e) {
@@ -119,10 +113,11 @@ public class RatingDAO {
         }
     }
 
+    // Otimização: Verifica existência sem baixar todos os dados
     public boolean existsByUserId(int userId) {
         String sql = "SELECT 1 FROM reviews WHERE id_user = ? LIMIT 1";
         try (Connection conn = ConnectionFactory.connect();
-                PreparedStatement stmt = conn.prepareStatement(sql)) {
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, userId);
             ResultSet rs = stmt.executeQuery();
             return rs.next();

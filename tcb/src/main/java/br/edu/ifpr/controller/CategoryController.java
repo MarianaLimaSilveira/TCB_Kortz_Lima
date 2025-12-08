@@ -23,6 +23,9 @@ public class CategoryController {
     }
 
     public void deleteCategory(Long categoryId) {
+        // Validação de Integridade Referencial:
+        // Verifica se a categoria está vinculada a alguma obra ativa no sistema.
+        // Se houver vínculo, impede a exclusão para evitar orfãos ou erros no BD.
         boolean categoriaEmUso = artworkDAO.readAll().stream()
                 .anyMatch(a -> a.getIdCategory() == categoryId);
 

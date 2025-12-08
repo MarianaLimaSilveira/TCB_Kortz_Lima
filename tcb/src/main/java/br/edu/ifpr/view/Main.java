@@ -6,7 +6,7 @@ import br.edu.ifpr.dao.ExhibitionArtworkDAO;
 
 public class Main {
 
-    // 1. Instancia Controllers
+    // Controllers
     private static UserController uC = new UserController();
     private static ArtworkController aC = new ArtworkController(ConnectionFactory.connect());
     private static ExhibitionController eC = new ExhibitionController(ConnectionFactory.connect());
@@ -17,7 +17,7 @@ public class Main {
     // DAO auxiliar para contagens no ExploreView
     private static ExhibitionArtworkDAO eaDao = new ExhibitionArtworkDAO(ConnectionFactory.connect());
 
-    // 2. Instancia Views (Injetando os Controllers)
+    // Views
     private static AuthView authView = new AuthView(uC);
     private static UserView userView = new UserView(uC);
     private static ArtworkView artworkView = new ArtworkView(aC, cC, uC);
