@@ -1,503 +1,69 @@
 package br.edu.ifpr.view;
 
-import java.util.Scanner;
-
-import br.edu.ifpr.controller.ArtworkController;
-import br.edu.ifpr.controller.CategoryController;
-import br.edu.ifpr.controller.ExhibitionArtworkController;
-import br.edu.ifpr.controller.ExhibitionController;
-import br.edu.ifpr.controller.RatingController;
-import br.edu.ifpr.controller.Sessao;
-import br.edu.ifpr.controller.UserController;
+import br.edu.ifpr.controller.*;
 import br.edu.ifpr.dao.ConnectionFactory;
-import br.edu.ifpr.model.Artwork;
-import br.edu.ifpr.model.Category;
-import br.edu.ifpr.model.Exhibition;
-import br.edu.ifpr.model.Rating;
-import br.edu.ifpr.model.User;
+import br.edu.ifpr.dao.ExhibitionArtworkDAO;
 
 public class Main {
 
-    static Scanner sc = new Scanner(System.in);
+    // 1. Instancia Controllers
+    private static UserController uC = new UserController();
+    private static ArtworkController aC = new ArtworkController(ConnectionFactory.connect());
+    private static ExhibitionController eC = new ExhibitionController(ConnectionFactory.connect());
+    private static CategoryController cC = new CategoryController();
+    private static RatingController rC = new RatingController();
+    private static ExhibitionArtworkController eaC = new ExhibitionArtworkController();
+    
+    // DAO auxiliar para contagens no ExploreView
+    private static ExhibitionArtworkDAO eaDao = new ExhibitionArtworkDAO(ConnectionFactory.connect());
 
-    final static UserController userC = new UserController();
-    final static RatingController ratingController = new RatingController();
-    final static ArtworkController artworkController = new ArtworkController(ConnectionFactory.connect());
-    final static ExhibitionController exhibitionController = new ExhibitionController(ConnectionFactory.connect());
-    final static ExhibitionArtworkController eaController = new ExhibitionArtworkController();
-    final static CategoryController categoryController = new CategoryController();
+    // 2. Instancia Views (Injetando os Controllers)
+    private static AuthView authView = new AuthView(uC);
+    private static UserView userView = new UserView(uC);
+    private static ArtworkView artworkView = new ArtworkView(aC, cC, uC);
+    private static CategoryView categoryView = new CategoryView(cC, aC, uC);
+    private static RatingView ratingView = new RatingView(rC, aC, eC);
+    private static ExhibitionView exhibitionView = new ExhibitionView(eC, eaC, aC, eaDao);
+    private static Explore exploreView = new Explore(uC, aC, eC, rC, categoryView, eaC, eaDao, cC);
 
     public static void main(String[] args) {
+        System.out.println("=========================================");
+        System.out.println("        SISTEMA DE ARTE DIGITAL          ");
+        System.out.println("=========================================");
 
-        int op1 = -2;
-        int saida = 59;
-        System.out.println("=== Sistema de Arte Digital ===");
-
-
-        while (saida==59) {
-            System.out.println("Escolha o método de inicialização");
-            System.out.println("1 - login");
-            System.out.println("2 - Criar usuário");
-            try { op1 = Integer.parseInt(sc.nextLine()); } catch (Exception e) {}
-
-            switch (op1) {
-            case 1:
-                 boolean logado = false;
-                while (!logado) {
-                    System.out.println("\n--- Login ---");
-                    System.out.print("Email: ");
-                    String email = sc.nextLine();
-                    System.out.print("Senha: ");
-                    String senha = sc.nextLine();
-
-                    logado = userC.login(email, senha);
-
-                    if (!logado) {
-                        System.out.println("Login inválido. Tente novamente.");
-                    }
-                }
-
-                System.out.println("\nBem-vindo, " + Sessao.getUsuarioLogado().getUsername() + "!");
-                saida = 0;
-                break;
-            case 2:
-                User u = new User();
-                    System.out.print("Username: ");
-                    u.setUsername(sc.nextLine());
-                    System.out.print("Email: ");
-                    u.setEmail(sc.nextLine());
-                    System.out.print("Senha: ");
-                    u.setPassword(sc.nextLine());
-                    userC.createUser(u);
-                saida = 0;
-                break;
-            default:
-                System.out.println("Opção inválida, tente novamente");
-                break;
-            }
+        while (!Sessao.isLogado()) {
+            authView.menuInicial();
         }
+
+        System.out.println("\nBem-vindo(a), " + Sessao.getUsuarioLogado().getUsername() + "!");
         
-        menuPrincipal();
+        boolean rodando = true;
+        while (rodando) {
+            System.out.println("\n--- HOME ---");
+            System.out.println("1. Explorar");
+            System.out.println("2. Minhas Obras");
+            System.out.println("3. Minhas Exposicoes");
+            System.out.println("4. Minhas Avaliacoes");
+            System.out.println("5. Meu Perfil");
+            System.out.println("6. Navegar por Categorias");
+            System.out.println("0. Sair (Logout)");
+            System.out.print(">> ");
 
-<<<<<<< HEAD
-
-    }
-
-    public static void menuPrincipal(){
-        int op = -1;
-=======
-        System.out.println("\nBem-vindo, " + Sessao.getUsuarioLogado().getUsername() + "!");
-
-        User logadoUser = Sessao.getUsuarioLogado();
-
-        if (logadoUser.getBiography() == null || logadoUser.getBiography().isBlank() ||
-                logadoUser.getProfilePhoto() == null || logadoUser.getProfilePhoto().isBlank()) {
-
-            System.out.println("Seu perfil está incompleto. Deseja completar agora? (S/N)");
-            String resp = sc.nextLine().trim().toUpperCase();
-
-            if (resp.equals("S")) {
-
-                System.out.print("Digite sua bio: ");
-                logadoUser.setBiography(sc.nextLine());
-
-                System.out.print("URL da foto de perfil: ");
-                logadoUser.setProfilePhoto(sc.nextLine());
-
-                userController.updateUser(logadoUser);
-
-                System.out.println("Perfil atualizado!");
-            } else {
-                System.out.println("Ok! Você pode completar mais tarde.");
-            }
-        }
-
-        int op = -1;
-
-        while (op != 0) {
-            System.out.println("\n=== MENU PRINCIPAL ===");
-            System.out.println("1 - Usuários");
-            System.out.println("2 - Obras");
-            System.out.println("3 - Exposições");
-            System.out.println("4 - Categorias");
-            System.out.println("5 - Avaliações");
-            System.out.println("6 - Vínculo Exposição↔Obra");
-            System.out.println("0 - Sair");
-            System.out.print("Escolha: ");
-
-            try {
-                op = Integer.parseInt(sc.nextLine());
-            } catch (Exception e) {
-                op = -1;
-            }
+            int op = ViewUtils.lerInteiro();
 
             switch (op) {
-
-                case 1 -> menuUsuarios(userController);
-                case 2 -> menuObras(artworkController);
-                case 3 -> menuExposicoes(exhibitionController);
-                case 4 -> menuCategorias(categoryController);
-                case 5 -> menuAvaliacoes(ratingController);
-                case 6 -> eaController.menuExhibitionArtwork();
-                case 0 -> System.out.println("Encerrando...");
-                default -> System.out.println("Opção inválida.");
-            }
-        }
-    }
-
-    public static void completarPerfil(User u, Scanner sc) {
-
-        System.out.print("Digite sua bio: ");
-        u.setBiography(sc.nextLine());
-
-        System.out.print("URL da sua foto de perfil: ");
-        u.setProfilePhoto(sc.nextLine());
-
-        System.out.println("Perfil atualizado!");
-    }
->>>>>>> e1cd9304715af9cee413dbb57a87aeb39b0c885f
-
-                while (op != 0) {
-                    System.out.println("\n=== MENU PRINCIPAL ===");
-                    System.out.println("1 - Usuários");
-                    System.out.println("2 - Obras");
-                    System.out.println("3 - Exposições");
-                    System.out.println("4 - Categorias");
-                    System.out.println("5 - Avaliações");
-                    System.out.println("6 - Vínculo Exposição↔Obra");
-                    System.out.println("0 - Sair");
-                    System.out.print("Escolha: ");
-                    
-                    try { op = Integer.parseInt(sc.nextLine()); }
-                    catch (Exception e) { op = -1; }
-
-                    switch(op) {
-
-                        case 1 -> menuUsuarios();
-                        case 2 -> menuObras();
-                        case 3 -> menuExposicoes();
-                        case 4 -> menuCategorias();
-                        case 5 -> menuAvaliacoes();
-                        case 6 -> eaController.menuExhibitionArtwork();
-                        case 0 -> System.out.println("Encerrando...");
-                        default -> System.out.println("Opção inválida.");
-                    }
-                }
-    }
-
-
-    private static void menuUsuarios( ) {
-        int op = -1;
-        while (op != 0) {
-            System.out.println("\n--- Usuários ---");
-            System.out.println("1 - Listar");
-            System.out.println("2 - Criar");
-            System.out.println("3 - Atualizar");
-            System.out.println("4 - Deletar");
-            System.out.println("0 - Voltar");
-            System.out.print("Escolha: ");
-
-            try {
-                op = Integer.parseInt(sc.nextLine());
-            } catch (Exception e) {
-                op = -1;
-            }
-
-            switch (op) {
-                case 1 -> userC.listUsers()
-                        .forEach(u -> System.out.println(
-                                u.getId() + " | " + u.getUsername() + " | " + u.getEmail()));
-
-                case 2 -> {
-                    User u = new User();
-                    System.out.print("Username: ");
-                    u.setUsername(sc.nextLine());
-                    System.out.print("Email: ");
-                    u.setEmail(sc.nextLine());
-                    System.out.print("Senha: ");
-                    u.setPassword(sc.nextLine());
-
-                    System.out.print("Deseja completar seu perfil agora? (s/n): ");
-                    String resp = sc.nextLine();
-
-                    if (resp.equalsIgnoreCase("s")) {
-                        completarPerfil(u, sc);
-                    }
-
-                    userC.createUser(u);
-                }
-
-                case 3 -> {
-                    System.out.print("ID do usuário: ");
-                    int id = Integer.parseInt(sc.nextLine());
-                    User u = userC.listUsers().stream()
-                            .filter(x -> x.getId() == id).findFirst().orElse(null);
-
-                    if (u == null) {
-                        System.out.println("Não encontrado.");
-                        break;
-                    }
-
-                    System.out.print("Novo username: ");
-                    u.setUsername(sc.nextLine());
-
-                    System.out.print("Deseja atualizar também bio/foto? (s/n): ");
-                    if (sc.nextLine().equalsIgnoreCase("s")) {
-                        completarPerfil(u, sc);
-                    }
-
-                    userC.updateUser(u);
-                }
-
-                case 4 -> {
-                    System.out.print("ID: ");
-                    int id = Integer.parseInt(sc.nextLine());
-                    userC.deleteUser(id);
-                }
-
+                case 1 -> exploreView.menuExplorar();
+                case 2 -> artworkView.menuMinhasObras();
+                case 3 -> exhibitionView.menuMinhasExposicoes();
+                case 4 -> ratingView.menuMinhasAvaliacoes();
+                case 5 -> userView.menuMeuPerfil();
+                case 6 -> categoryView.menuNavegarCategorias();
                 case 0 -> {
+                    rodando = false;
+                    Sessao.logout();
+                    System.out.println("Logout realizado. Ate logo!");
                 }
-                default -> System.out.println("Opção inválida.");
-            }
-        }
-    }
-
-<<<<<<< HEAD
-
-    private static void menuObras() {
-=======
-    private static void menuObras(ArtworkController artC) {
->>>>>>> e1cd9304715af9cee413dbb57a87aeb39b0c885f
-        int op = -1;
-        while (op != 0) {
-            System.out.println("\n--- Obras ---");
-            System.out.println("1 - Listar");
-            System.out.println("2 - Criar");
-            System.out.println("3 - Atualizar");
-            System.out.println("4 - Deletar");
-            System.out.println("0 - Voltar");
-            System.out.print("Escolha: ");
-
-            try {
-                op = Integer.parseInt(sc.nextLine());
-            } catch (Exception e) {
-            }
-
-            switch (op) {
-<<<<<<< HEAD
-                case 1 -> artworkController.listArtworks().forEach(a ->
-                    System.out.println(a.getId() + " | " + a.getTitle() + " | Categoria: " + a.getIdCategory()));
-=======
-                case 1 -> artC.listArtworks().forEach(a -> System.out
-                        .println(a.getId() + " | " + a.getTitle() + " | Categoria: " + a.getIdCategory()));
->>>>>>> e1cd9304715af9cee413dbb57a87aeb39b0c885f
-
-                case 2 -> {
-                    Artwork a = new Artwork();
-                    System.out.print("Título: ");
-                    a.setTitle(sc.nextLine());
-                    System.out.print("Descrição: ");
-                    a.setDescription(sc.nextLine());
-                    System.out.print("Categoria (string): ");
-                    a.setIdCategory(sc.nextLong());
-                    a.setIdUser((int) Sessao.getUsuarioLogado().getId());
-                    artworkController.createArtwork(a);
-                }
-
-                case 3 -> {
-                    System.out.print("ID da obra: ");
-                    int id = Integer.parseInt(sc.nextLine());
-                    Artwork a = artworkController.listArtworks().stream()
-                            .filter(x -> x.getId() == id).findFirst().orElse(null);
-                    if (a == null) {
-                        System.out.println("Not found");
-                        break;
-                    }
-                    System.out.print("Novo título: ");
-                    a.setTitle(sc.nextLine());
-                    artworkController.updateArtwork(a);
-                }
-
-                case 4 -> {
-                    System.out.print("ID da obra: ");
-                    int id = Integer.parseInt(sc.nextLine());
-                    artworkController.deleteArtwork(id);
-                }
-
-                case 0 -> {
-                }
-            }
-        }
-    }
-
-<<<<<<< HEAD
-
-    private static void menuExposicoes() {
-=======
-    private static void menuExposicoes(ExhibitionController exC) {
->>>>>>> e1cd9304715af9cee413dbb57a87aeb39b0c885f
-        int op = -1;
-        while (op != 0) {
-            System.out.println("\n--- Exposições ---");
-            System.out.println("1 - Listar");
-            System.out.println("2 - Criar");
-            System.out.println("3 - Atualizar");
-            System.out.println("4 - Deletar");
-            System.out.println("0 - Voltar");
-            System.out.print("Escolha: ");
-
-            try {
-                op = Integer.parseInt(sc.nextLine());
-            } catch (Exception e) {
-            }
-
-            switch (op) {
-<<<<<<< HEAD
-                case 1 -> exhibitionController.listExhibitions().forEach(e ->
-                    System.out.println(e.getId() + " | " + e.getName() + " | " + e.getTheme()));
-=======
-                case 1 -> exC.listExhibitions()
-                        .forEach(e -> System.out.println(e.getId() + " | " + e.getName() + " | " + e.getTheme()));
->>>>>>> e1cd9304715af9cee413dbb57a87aeb39b0c885f
-
-                case 2 -> {
-                    Exhibition ex = new Exhibition();
-                    ex.setIdCreator(Sessao.getUsuarioLogado().getId());
-
-                    System.out.print("Nome: ");
-                    ex.setName(sc.nextLine());
-                    System.out.print("Tema: ");
-                    ex.setTheme(sc.nextLine());
-                    System.out.print("Descrição: ");
-                    ex.setDescription(sc.nextLine());
-                    System.out.print("Data início: ");
-                    ex.setStartDate(sc.nextLine());
-                    System.out.print("Data fim: ");
-                    ex.setEndDate(sc.nextLine());
-
-                    exhibitionController.createExhibition(ex);
-                }
-
-                case 3 -> System.out.println("Implementação simples: atualize direto no DB se precisar.");
-
-                case 4 -> {
-                    System.out.print("ID da exposição: ");
-                    int id = Integer.parseInt(sc.nextLine());
-                    exhibitionController.deleteExhibition(id);
-                }
-
-                case 0 -> {
-                }
-            }
-        }
-    }
-
-<<<<<<< HEAD
-
-    private static void menuCategorias() {
-=======
-    private static void menuCategorias(CategoryController catC) {
->>>>>>> e1cd9304715af9cee413dbb57a87aeb39b0c885f
-        int op = -1;
-        while (op != 0) {
-            System.out.println("\n--- Categorias ---");
-            System.out.println("1 - Listar");
-            System.out.println("2 - Criar");
-            System.out.println("3 - Atualizar");
-            System.out.println("4 - Deletar");
-            System.out.println("0 - Voltar");
-            System.out.print("Escolha: ");
-
-            try {
-                op = Integer.parseInt(sc.nextLine());
-            } catch (Exception e) {
-            }
-
-            switch (op) {
-<<<<<<< HEAD
-                case 1 -> categoryController.listCategories().forEach(c ->
-                    System.out.println(c.getId() + " | " + c.getName()));
-=======
-                case 1 -> catC.listCategories().forEach(c -> System.out.println(c.getId() + " | " + c.getName()));
->>>>>>> e1cd9304715af9cee413dbb57a87aeb39b0c885f
-
-                case 2 -> {
-                    Category c = new Category();
-                    System.out.print("Nome: ");
-                    c.setName(sc.nextLine());
-                    System.out.print("Descrição: ");
-                    c.setDescription(sc.nextLine());
-                    categoryController.createCategory(c);
-                }
-
-                case 3 -> System.out.println("Atualização simplificada, altere no DB se necessário.");
-
-                case 4 -> {
-                    System.out.print("ID da categoria: ");
-                    long id = Long.parseLong(sc.nextLine());
-                    categoryController.deleteCategory(id);
-                }
-
-                case 0 -> {
-                }
-            }
-        }
-    }
-
-<<<<<<< HEAD
-
-    private static void menuAvaliacoes() {
-=======
-    private static void menuAvaliacoes(RatingController rC) {
->>>>>>> e1cd9304715af9cee413dbb57a87aeb39b0c885f
-        int op = -1;
-        while (op != 0) {
-            System.out.println("\n--- Avaliações ---");
-            System.out.println("1 - Listar");
-            System.out.println("2 - Criar");
-            System.out.println("0 - Voltar");
-            System.out.print("Escolha: ");
-
-            try {
-                op = Integer.parseInt(sc.nextLine());
-            } catch (Exception e) {
-            }
-
-            switch (op) {
-<<<<<<< HEAD
-                case 1 -> ratingController.listRatings().forEach(r ->
-                    System.out.println(r.getId() + " | Nota: " + r.getNote() + " | Texto: " + r.getText())
-                );
-=======
-                case 1 -> rC.listRatings().forEach(
-                        r -> System.out.println(r.getId() + " | Nota: " + r.getNote() + " | Texto: " + r.getText()));
->>>>>>> e1cd9304715af9cee413dbb57a87aeb39b0c885f
-
-                case 2 -> {
-                    Rating r = new Rating();
-                    r.setUserId(Sessao.getUsuarioLogado().getId());
-
-                    System.out.print("Avaliar obra (id) ou ENTER para pular: ");
-                    String obraStr = sc.nextLine();
-                    if (!obraStr.isEmpty())
-                        r.setArtworkId(Long.parseLong(obraStr));
-
-                    System.out.print("Avaliar exposição (id) ou ENTER para pular: ");
-                    String expStr = sc.nextLine();
-                    if (!expStr.isEmpty())
-                        r.setExhibitionId(Long.parseLong(expStr));
-
-                    System.out.print("Nota (1-5): ");
-                    r.setNote(Integer.parseInt(sc.nextLine()));
-
-                    System.out.print("Comentário: ");
-                    r.setText(sc.nextLine());
-
-                    ratingController.createRating(r);
-                }
-
-                case 0 -> {
-                }
+                default -> System.out.println("Opcao invalida.");
             }
         }
     }

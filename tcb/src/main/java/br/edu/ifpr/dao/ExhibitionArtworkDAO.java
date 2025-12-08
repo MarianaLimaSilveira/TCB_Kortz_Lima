@@ -19,7 +19,7 @@ public class ExhibitionArtworkDAO {
     }
 
     public void create(ExhibitionArtwork ea) {
-        String sql = "INSERT INTO exhibition_artwork (exhibition_id, artwork_id) VALUES (?, ?)";
+        String sql = "INSERT INTO exhibition_artwork (id_exhibition, id_artwork) VALUES (?, ?)";
 
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setLong(1, ea.getExhibitionId());
@@ -33,7 +33,7 @@ public class ExhibitionArtworkDAO {
 
     public List<ExhibitionArtwork> readAll() {
         List<ExhibitionArtwork> lista = new ArrayList<>();
-        String sql = "SELECT id, exhibition_id, artwork_id FROM exhibition_artwork";
+        String sql = "SELECT id, id_exhibition, id_artwork FROM exhibition_artwork";
 
         try (Statement stmt = conn.createStatement()) {
             ResultSet rs = stmt.executeQuery(sql);
@@ -41,8 +41,8 @@ public class ExhibitionArtworkDAO {
             while (rs.next()) {
                 ExhibitionArtwork ea = new ExhibitionArtwork();
                 ea.setId(rs.getLong("id"));
-                ea.setExhibitionId(rs.getLong("exhibition_id"));
-                ea.setArtworkId(rs.getLong("artwork_id"));
+                ea.setExhibitionId(rs.getLong("id_exhibition"));
+                ea.setArtworkId(rs.getLong("id_artwork"));
 
                 lista.add(ea);
             }
@@ -54,7 +54,7 @@ public class ExhibitionArtworkDAO {
     }
 
     public void update(ExhibitionArtwork ea) {
-        String sql = "UPDATE exhibition_artwork SET exhibition_id = ?, artwork_id = ? WHERE id = ?";
+        String sql = "UPDATE exhibition_artwork SET id_exhibition = ?, id_artwork = ? WHERE id = ?";
 
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setLong(1, ea.getExhibitionId());

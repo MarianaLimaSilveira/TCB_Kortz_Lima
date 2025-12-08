@@ -1,7 +1,6 @@
 package br.edu.ifpr.controller;
 
 import java.util.List;
-
 import br.edu.ifpr.dao.ArtworkDAO;
 import br.edu.ifpr.dao.CategoryDAO;
 import br.edu.ifpr.model.Category;
@@ -23,20 +22,15 @@ public class CategoryController {
         categoryDAO.update(category);
     }
 
-    public void deleteCategory(Long id_category) {
-
-        // CORREÇÃO: Comparar ID com ID (Long com Long)
-        // Antes estava tentando comparar ID com Nome usando equalsIgnoreCase (que é só
-        // para texto)
+    public void deleteCategory(Long categoryId) {
         boolean categoriaEmUso = artworkDAO.readAll().stream()
-                .anyMatch(a -> a.getIdCategory() == id_category);
+                .anyMatch(a -> a.getIdCategory() == categoryId);
 
         if (categoriaEmUso) {
-            System.out
-                    .println("Categoria está em uso por obras e não pode ser excluída. Apenas desativação permitida.");
+            System.out.println("Categoria esta em uso por obras e nao pode ser excluida.");
             return;
         }
 
-        categoryDAO.delete(id_category);
+        categoryDAO.delete(categoryId);
     }
 }

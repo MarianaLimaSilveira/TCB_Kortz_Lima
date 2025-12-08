@@ -15,8 +15,8 @@ public class ConnectionFactory {
             if (conn == null || conn.isClosed()) {
 
                 String url = "jdbc:mysql://127.0.0.1:3306/tcb_lima_kortz";
-                String user = "aluno";
-                String password = "aluno";
+                String user = "root";
+                String password = "belinha";
 
                 conn = DriverManager.getConnection(url, user, password);
                 System.out.println("Conectado ao banco com sucesso!");
