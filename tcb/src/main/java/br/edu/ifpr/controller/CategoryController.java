@@ -1,6 +1,7 @@
 package br.edu.ifpr.controller;
 
 import java.util.List;
+
 import br.edu.ifpr.dao.ArtworkDAO;
 import br.edu.ifpr.dao.CategoryDAO;
 import br.edu.ifpr.model.Category;
@@ -23,6 +24,9 @@ public class CategoryController {
     }
 
     public void deleteCategory(Long categoryId) {
+        // Validação de Integridade Referencial:
+        // Verifica se a categoria está vinculada a alguma obra ativa no sistema.
+        // Se houver vínculo, impede a exclusão para evitar orfãos ou erros no BD.
         boolean categoriaEmUso = artworkDAO.readAll().stream()
                 .anyMatch(a -> a.getIdCategory() == categoryId);
 

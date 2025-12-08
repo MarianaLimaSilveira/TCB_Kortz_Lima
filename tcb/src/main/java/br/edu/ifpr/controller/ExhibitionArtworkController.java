@@ -12,13 +12,14 @@ import br.edu.ifpr.model.ExhibitionArtwork;
 
 public class ExhibitionArtworkController {
 
-    // Método para listar obras de uma exposição (no console)
+    // Lista todas as obras vinculadas a uma exposição específica
     public void listarObrasDeExposicao(long exhibitionId) {
+        // Usa try-with-resources para garantir que a conexão feche ao terminar a listagem
         try (Connection conn = ConnectionFactory.connect()) {
             ExhibitionArtworkDAO eaDAO = new ExhibitionArtworkDAO(conn);
             ArtworkDAO artworkDAO = new ArtworkDAO(); 
 
-            // Pega os IDs das obras vinculadas
+            // 1. Busca na tabela de relacionamento (exhibition_artwork) apenas os IDs das obras dessa exposição
             List<Long> artworkIds = eaDAO.readAll().stream()
                     .filter(ea -> ea.getExhibitionId() == exhibitionId)
                     .map(ExhibitionArtwork::getArtworkId)
@@ -29,8 +30,8 @@ public class ExhibitionArtworkController {
                 return;
             }
 
+            // 2. Com a lista de IDs, busca os objetos completos (Artwork) para exibir os detalhes (Título, etc)
             System.out.println("\nObras na exposicao " + exhibitionId + ":");
-            // Busca os detalhes das obras
             List<Artwork> obras = artworkDAO.readAll().stream()
                     .filter(a -> artworkIds.contains((long) a.getId()))
                     .collect(Collectors.toList());
@@ -44,21 +45,21 @@ public class ExhibitionArtworkController {
         }
     }
 
-    // VINCULAR (Adicionar Obra) - COM PROTEÇÃO DE DONO
+    // Adiciona uma obra a uma exposição (Cria o vínculo)
     public void vincularObraExposicao(long exhibitionId, long artworkId) {
-        // Abre conexão UMA vez para todas as operações
         try (Connection conn = ConnectionFactory.connect()) {
             
-            ArtworkDAO artworkDAO = new ArtworkDAO(); // ArtworkDAO gerencia sua própria conexão
+            ArtworkDAO artworkDAO = new ArtworkDAO(); 
             Artwork obra = artworkDAO.findById((int) artworkId);
 
-            // 1. Verifica se a obra existe
+            // Validação 1: Obra existe?
             if (obra == null) {
                 System.out.println("Obra nao encontrada.");
                 return;
             }
 
-            // 2. REGRA DE NEGÓCIO: Só pode adicionar se a obra for SUA
+            // Validação 2 (Regra de Negócio): Segurança
+            // Impede que um usuário adicione obras de outros artistas à sua exposição.
             if (obra.getIdUser() != Sessao.getIdUsuario()) {
                 System.out.println("ERRO: Voce so pode adicionar suas proprias obras em suas exposicoes.");
                 return;
@@ -66,7 +67,7 @@ public class ExhibitionArtworkController {
 
             ExhibitionArtworkDAO eaDAO = new ExhibitionArtworkDAO(conn);
 
-            // 3. Verifica se já está vinculada
+            // Validação 3: Evita duplicidade (Obra já está na exposição?)
             boolean jaVinculado = eaDAO.readAll().stream()
                     .anyMatch(ea -> ea.getExhibitionId() == exhibitionId && ea.getArtworkId() == artworkId);
 
@@ -75,13 +76,12 @@ public class ExhibitionArtworkController {
                 return;
             }
 
-            // 4. Cria o vínculo
+            // Cria o vínculo no banco
             ExhibitionArtwork ea = new ExhibitionArtwork();
             ea.setExhibitionId(exhibitionId);
             ea.setArtworkId(artworkId);
 
             eaDAO.create(ea);
-            // Mensagem de sucesso já sai no DAO
 
         } catch (Exception e) {
             System.out.println("Erro ao vincular: " + e.getMessage());
@@ -89,11 +89,12 @@ public class ExhibitionArtworkController {
         }
     }
 
-    // DESVINCULAR (Remover Obra)
+    // Remove uma obra de uma exposição (Apaga o vínculo)
     public void desvincularObraExposicao(long exhibitionId, long artworkId) {
         try (Connection conn = ConnectionFactory.connect()) {
             ExhibitionArtworkDAO eaDAO = new ExhibitionArtworkDAO(conn);
 
+            // Busca o ID específico do vínculo para deletar
             ExhibitionArtwork link = eaDAO.readAll().stream()
                     .filter(ea -> ea.getExhibitionId() == exhibitionId && ea.getArtworkId() == artworkId)
                     .findFirst()

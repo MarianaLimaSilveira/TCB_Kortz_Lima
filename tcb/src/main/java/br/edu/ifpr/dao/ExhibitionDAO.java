@@ -18,7 +18,7 @@ public class ExhibitionDAO {
                 "VALUES (?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = ConnectionFactory.connect();
-                PreparedStatement stmt = conn.prepareStatement(sql)) {
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setLong(1, exhibition.getIdCreator());
             stmt.setString(2, exhibition.getName());
@@ -39,12 +39,11 @@ public class ExhibitionDAO {
         String sql = "SELECT * FROM exhibitions";
 
         try (Connection conn = ConnectionFactory.connect();
-                Statement stmt = conn.createStatement();
-                ResultSet rs = stmt.executeQuery(sql)) {
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
 
             while (rs.next()) {
                 Exhibition ex = new Exhibition();
-
                 ex.setId(rs.getInt("id"));
                 ex.setIdCreator(rs.getInt("id_creator"));
                 ex.setName(rs.getString("name"));
@@ -52,7 +51,6 @@ public class ExhibitionDAO {
                 ex.setDescription(rs.getString("description"));
                 ex.setStartDate(rs.getString("start_date"));
                 ex.setEndDate(rs.getString("end_date"));
-
                 exhibitions.add(ex);
             }
 
@@ -68,7 +66,7 @@ public class ExhibitionDAO {
                 "WHERE id=?";
 
         try (Connection conn = ConnectionFactory.connect();
-                PreparedStatement stmt = conn.prepareStatement(sql)) {
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setLong(1, exhibition.getIdCreator());
             stmt.setString(2, exhibition.getName());
@@ -90,11 +88,10 @@ public class ExhibitionDAO {
         String sql = "DELETE FROM exhibitions WHERE id=?";
 
         try (Connection conn = ConnectionFactory.connect();
-                PreparedStatement stmt = conn.prepareStatement(sql)) {
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, id);
             stmt.executeUpdate();
-
             System.out.println("Exibição deletada!");
 
         } catch (SQLException e) {

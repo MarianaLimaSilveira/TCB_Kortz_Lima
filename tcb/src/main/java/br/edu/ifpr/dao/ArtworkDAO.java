@@ -15,8 +15,10 @@ public class ArtworkDAO {
     public void create(Artwork artwork) {
         String sql = "INSERT INTO artworks (title, description, id_category, id_user) VALUES (?, ?, ?, ?)";
 
+        // Try-with-resources: Garante que Connection e PreparedStatement sejam fechados automaticamente
+        // mesmo em caso de exceção, evitando vazamento de conexões no banco.
         try (Connection conn = ConnectionFactory.connect();
-                PreparedStatement stmt = conn.prepareStatement(sql)) {
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, artwork.getTitle());
             stmt.setString(2, artwork.getDescription());
@@ -35,16 +37,17 @@ public class ArtworkDAO {
         String sql = "SELECT * FROM artworks";
 
         try (Connection conn = ConnectionFactory.connect();
-                Statement stmt = conn.createStatement();
-                ResultSet rs = stmt.executeQuery(sql)) {
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
 
+            // Itera sobre o ResultSet e mapeia cada linha da tabela para um objeto Artwork
             while (rs.next()) {
                 Artwork a = new Artwork();
                 a.setId(rs.getInt("id"));
                 a.setTitle(rs.getString("title"));
                 a.setDescription(rs.getString("description"));
-                a.setIdCategory(rs.getLong("id_category"));
-                a.setIdUser(rs.getLong("id_user"));
+                a.setIdCategory(rs.getLong("id_category")); // Mapeia FK Categoria
+                a.setIdUser(rs.getLong("id_user"));         // Mapeia FK Usuário (Criador)
                 artworks.add(a);
             }
 
@@ -61,13 +64,13 @@ public class ArtworkDAO {
                 "WHERE id=?";
 
         try (Connection conn = ConnectionFactory.connect();
-                PreparedStatement stmt = conn.prepareStatement(sql)) {
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, artwork.getTitle());
             stmt.setString(2, artwork.getDescription());
             stmt.setLong(3, artwork.getIdCategory());
             stmt.setLong(4, artwork.getIdUser());
-            stmt.setLong(5, artwork.getId());
+            stmt.setLong(5, artwork.getId()); // ID usado na cláusula WHERE
 
             stmt.executeUpdate();
             System.out.println("Artwork atualizada!");
@@ -81,7 +84,7 @@ public class ArtworkDAO {
         String sql = "DELETE FROM artworks WHERE id=?";
 
         try (Connection conn = ConnectionFactory.connect();
-                PreparedStatement stmt = conn.prepareStatement(sql)) {
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, id);
             stmt.executeUpdate();
@@ -93,12 +96,13 @@ public class ArtworkDAO {
         }
     }
 
+    // Busca uma obra específica pelo ID (Útil para Update e Validações)
     public Artwork findById(int id) {
         String sql = "SELECT * FROM artworks WHERE id = ?";
         Artwork artwork = null;
 
         try (Connection conn = ConnectionFactory.connect();
-                PreparedStatement stmt = conn.prepareStatement(sql)) {
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, id);
             ResultSet rs = stmt.executeQuery();
@@ -109,7 +113,6 @@ public class ArtworkDAO {
                 artwork.setTitle(rs.getString("title"));
                 artwork.setDescription(rs.getString("description"));
                 artwork.setIdCategory(rs.getLong("id_category"));
-                // IMPORTANTE: Aqui recuperamos o ID do usuário original
                 artwork.setIdUser(rs.getLong("id_user"));
             }
         } catch (SQLException e) {
